@@ -59,7 +59,6 @@ try:
     while len(elements) != 0 and count <= 5:
         logging.info("retry Submit form")
         logging.info("No. " + str(count))
-        print(count)
         driver.find_element_by_id("smartAlertClose").click()
         time.sleep(1)
         captcha = get_captcha(driver)
@@ -70,7 +69,6 @@ try:
     result = driver.find_element_by_id('E8_WT_UNIT_NM').text
     logging.info("Result: " + result)
 
-    print(result)
 
 except Exception as e:
     driver.quit()
