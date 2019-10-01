@@ -60,6 +60,7 @@ try:
             print(date)
             print(content)
 
+    driver.quit()
 except Exception as e:
     driver.quit()
     logging.error("error: " + str(e))

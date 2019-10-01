@@ -68,8 +68,8 @@ try:
 
     result = driver.find_element_by_id('E8_WT_UNIT_NM').text
     logging.info("Result: " + result)
-
-
+    driver.quit()
+    
 except Exception as e:
     driver.quit()
     logging.error("error: " + str(e))
