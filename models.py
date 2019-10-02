@@ -1,4 +1,4 @@
-from main import db
+from server import db
 import datetime
 
 class BaseMixin(object):

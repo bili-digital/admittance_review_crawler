@@ -1,16 +1,14 @@
 import os
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
 from consumer_debt import ConsumerDebtCrawler
+from server import app
+from server import db
+from models import ConsumerDebt
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-load_dotenv()
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
-db = SQLAlchemy(app)
 
 options = Options()
 options.add_argument('--headless')
@@ -26,9 +24,10 @@ def start_crawler():
     name = request.args.get('name')
     id_number = request.args.get('id_number')
     birthday = request.args.get('birthday')
+    tenant_id = request.args.get('tenant_id')
 
     total_result = {}
-    consumber_debt_crawler = ConsumerDebtCrawler(driver, name)
+    consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumber_debt_result'] = consumber_debt_crawler.run()
 
     driver.close()

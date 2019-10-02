@@ -3,7 +3,8 @@ import os
 import time
 import re
 import urllib.request as urllib2
-from bs4 import BeautifulSoup 
+from bs4 import BeautifulSoup
+
 
 logging.basicConfig(level=logging.DEBUG, 
                     format='%(asctime)s - %(levelname)s : %(message)s', 
@@ -11,9 +12,13 @@ logging.basicConfig(level=logging.DEBUG,
 
 class ConsumerDebtCrawler():
 
-    def __init__(self, driver, name):
+    def __init__(self, model, db, driver, name, id_number, tenant_id):
         self.driver= driver
         self.name = name
+        self.id_number = id_number
+        self.tenant_id = tenant_id
+        self.db = db
+        self.model = model
 
 
     def parse_date(self, date):
@@ -24,17 +29,16 @@ class ConsumerDebtCrawler():
     def run(self):
         try:
             self.driver.get('''http://cdcb.judicial.gov.tw/abbs/wkw/WHD9A01.jsp''')
-
             name = self.driver.find_element_by_name("clnm")
             id_number = self.driver.find_element_by_name("idno")
 
             name.clear()
             id_number.clear()
 
-            name.send_keys("莊樹霖")
-            id_number.send_keys("")
-
-            logging.info("Start to query: " + "莊樹霖")
+            name.send_keys(self.name)
+            id_number.send_keys(self.id_number)
+            
+            logging.info("Start to query: " + self.name)
 
             self.driver.find_element_by_name("Button").click()
             time.sleep(1)
@@ -55,12 +59,10 @@ class ConsumerDebtCrawler():
                     title = "".join(data[1].text.strip().split())
                     date = self.parse_date(data[2].text).strip()
                     content = data[3].text.strip()
-                    print(court)
-                    print(title)
-                    print(date)
-                    print(content)
+                    self.model.create(court=court, title=title, date=date,
+                                      content=content, tenant_id=self.tenant_id)
 
-            
+                    logging.info("Consumer Debt Crawler Finished")
             return True
         except Exception as e:
             logging.error("error: " + str(e))
