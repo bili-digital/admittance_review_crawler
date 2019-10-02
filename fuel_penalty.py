@@ -19,7 +19,7 @@ load_dotenv()
 
 logging.basicConfig(level=logging.DEBUG, 
                     format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='trafic_penalty.log') 
+                    filename='fuel_penalty.log') 
 
 options = Options()
 options.add_argument('--headless')
@@ -83,9 +83,9 @@ def get_captcha(driver):
     return ret
 
 def fill_data(driver, captcha):
-    id_number = driver.find_element_by_id("id1")
+    id_number = driver.find_element_by_id("idNo")
     birthday = driver.find_element_by_id("birthday")
-    answer = driver.find_element_by_id("validateStr")
+    answer = driver.find_element_by_name("validateStr")
 
     id_number.clear()
     birthday.clear()
@@ -100,14 +100,15 @@ def fill_data(driver, captcha):
     driver.find_element_by_id("m3_warning").click()
     time.sleep(1)
 
-    driver.find_element_by_id("search1").click()
+    driver.find_element_by_id("submit_btn").click()
 
     logging.info("Submit form")
-    elements = driver.find_elements_by_xpath("//*[contains(text(), '線上繳費')]")
+    elements = driver.find_elements_by_xpath("//*[contains(text(), '如需查詢車牌號碼完整資訊，請先登入/加入會員')]")
+    print(elements)
     return elements
 
 try:
-    driver.get('''https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay''')
+    driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
     captcha = get_captcha(driver)
     logging.info("captcha is " + captcha)  
     elements = fill_data(driver, captcha)
@@ -123,27 +124,42 @@ try:
         elements = fill_data(driver, captcha)
         count+=1
     
-    fetch = True
-    while fetch:
-      soup = BeautifulSoup(driver.page_source, 'html.parser')
-      next_button = soup.select("#next")
-      rows = soup.select('tr.even, tr.odd')
-      for idx, row in enumerate(rows):
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    basic_amount_rows = soup.select('#info tr.even, #info tr.odd')
+    expired_amount_rows = soup.select('#info2 tr.even, #info2 tr.odd')
+    for idx, row in enumerate(basic_amount_rows):
         data = row.select('td')
-        violation_date = parse_date(data[1].text.strip())
-        content = data[2].text.strip()
-        amount = data[3].text.strip()
+        transportation = data[1].text.strip()
+        car_number = data[2].text.strip()
+        period = data[3].text.strip()
         should_paid_date = parse_date(data[4].text.strip())
-        print(violation_date)
-        print(content)
-        print(amount)
+        supervisory_department = data[5].text.strip()
+        amount = data[6].text.strip()
+        comment = data[7].contents[0].strip()
+        print(transportation)
+        print(car_number)
+        print(period)
         print(should_paid_date)
-      if len(next_button) > 0:
-        href = next_button[0]['href']
-        driver.get('https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay' + href)
-      else:
-        fetch = False
-        driver.quit()
+        print(supervisory_department)
+        print(amount)
+        print(comment)
+    for idx, row in enumerate(expired_amount_rows):
+        data = row.select('td')
+        transportation = data[0].text.strip()
+        car_number = data[1].text.strip()
+        bill_number = data[2].text.strip()
+        supervisory_department = data[3].text.strip()
+        should_paid_date = parse_date(data[4].text.strip())
+        amount = data[5].text.strip()
+        comment = data[6].contents[0].strip()
+        print(transportation)
+        print(car_number)
+        print(bill_number)
+        print(supervisory_department)
+        print(should_paid_date)
+        print(amount)
+        print(comment)
+    driver.quit()
 
 
 
