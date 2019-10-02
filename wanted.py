@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG,
                     filename='wanted.log') 
 
 options = Options()
-options.add_argument('--headless')
+# options.add_argument('--headless')
 options.add_argument('--disable-gpu') 
 # For no-gui operation system user to set chrome driver 
 options.add_argument('--no-sandbox')
@@ -44,8 +44,8 @@ def fill_data(driver, captcha):
     driver.find_element_by_id("queryBtn").click()
 
     logging.info("Submit form")
+    time.sleep(2)
     elements = driver.find_elements_by_xpath("//*[contains(text(), 'Ok')]")
-
     return elements
 
 try:
@@ -69,7 +69,7 @@ try:
     result = driver.find_element_by_id('E8_WT_UNIT_NM').text
     logging.info("Result: " + result)
     driver.quit()
-    
+
 except Exception as e:
     driver.quit()
     logging.error("error: " + str(e))

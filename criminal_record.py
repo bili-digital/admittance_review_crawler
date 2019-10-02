@@ -51,7 +51,7 @@ try:
             title = data[1].text
             judge_date = parse_date(data[2].text)
             reason = data[3].text
-
+            print(title)
     driver.quit()
 except Exception as e:
     driver.quit()

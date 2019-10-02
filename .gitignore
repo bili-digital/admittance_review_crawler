@@ -1,2 +1,4 @@
 chromedriver
 .env
+*.log
+*.png

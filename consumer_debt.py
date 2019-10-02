@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG,
                     filename='consumer_debt.log') 
 
 options = Options()
-# options.add_argument('--headless')
+options.add_argument('--headless')
 options.add_argument('--disable-gpu') 
 # For no-gui operation system user to set chrome driver 
 options.add_argument('--no-sandbox')
@@ -50,6 +50,8 @@ try:
             continue
         else:
             data = criminal_row.select('td')
+            if len(data) < 6:
+                break
             logging.info("Get data for title: " + data[1].text)
             court = data[0].text.strip()
             title = "".join(data[1].text.strip().split())

@@ -13,3 +13,4 @@ for data_row in data:
     logging.info("Get data")
     name = data_row.contents[0].strip()
     id_number = data_row.contents[2].strip()
+    print(name)
