@@ -7,7 +7,6 @@ class BaseMixin(object):
         kw['created_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         kw['updated_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         obj = cls(**kw)
-        print(obj)
         db.session.add(obj)
         db.session.commit()
 
