@@ -2,3 +2,4 @@ chromedriver
 .env
 *.log
 *.png
+*.pyc

@@ -1,9 +1,10 @@
 import os
 from flask import Flask, request, jsonify
 from consumer_debt import ConsumerDebtCrawler
+from criminal_record import CriminalRecordCrawler
 from server import app
 from server import db
-from models import ConsumerDebt
+from models import ConsumerDebt, CriminalRecord
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -11,7 +12,7 @@ from selenium.webdriver.chrome.options import Options
 
 
 options = Options()
-options.add_argument('--headless')
+# options.add_argument('--headless')
 options.add_argument('--disable-gpu') 
 # For no-gui operation system user to set chrome driver 
 options.add_argument('--no-sandbox')
@@ -30,9 +31,12 @@ def start_crawler():
     consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumber_debt_result'] = consumber_debt_crawler.run()
 
+    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+    total_result['criminal_record_result'] = criminal_record_crawler.run()
+
     driver.close()
     return jsonify(total_result)
 
     
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=5000, debug=True)

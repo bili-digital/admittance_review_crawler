@@ -7,7 +7,7 @@ class BaseMixin(object):
         kw['created_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         kw['updated_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         obj = cls(**kw)
-        db.session.add(obj)
+        r = db.session.add(obj)
         db.session.commit()
 
 class ConsumerDebt(BaseMixin, db.Model):
@@ -33,3 +33,24 @@ class ConsumerDebt(BaseMixin, db.Model):
 
     def __repr__(self):
         return '<ConsumerDebt %r>' % self.content
+class CriminalRecord(BaseMixin, db.Model):
+    __tablename__ = 'py_criminal_records'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(45))
+    judge_date = db.Column(db.DateTime)
+    reason = db.Column(db.String(45))
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, title, judge_date, reason, tenant_id, created_at="", updated_at=""):
+        self.title = title
+        self.judge_date = judge_date
+        self.reason = reason
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<CriminalRecord %r>' % self.reason
