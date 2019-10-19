@@ -4,9 +4,10 @@ from consumer_debt import ConsumerDebtCrawler
 from criminal_record import CriminalRecordCrawler
 from current_wanted import CurrentWantCrawler
 from current_wanted_get import CurrentWantGetter
+from domestic import DomesticCrawler
 from server import app
 from server import db
-from models import ConsumerDebt, CriminalRecord, CurrentWanted
+from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -36,8 +37,11 @@ def start_crawler():
     # criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
     # total_result['criminal_record_result'] = criminal_record_crawler.run()
 
-    current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
-    total_result['current_want_result'] = current_want_getter.run()
+    # current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
+    # total_result['current_want_result'] = current_want_getter.run()
+
+    domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+    total_result['domestic_crawler_result'] = domestic_crawler.run()
 
     driver.close()
     return jsonify(total_result)

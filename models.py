@@ -72,3 +72,29 @@ class CurrentWanted(BaseMixin, db.Model):
 
     def __repr__(self):
         return '<CurrentWanted %r>' % self.name
+
+class Domestic(BaseMixin, db.Model):
+    __tablename__ = 'py_domestic'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    court = db.Column(db.String(45))
+    title = db.Column(db.String(45))
+    post_date = db.Column(db.DateTime)
+    publish_date = db.Column(db.DateTime)
+    content = db.Column(db.String(45))
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, court, title, post_date, publish_date, content, tenant_id, created_at="", updated_at=""):
+        self.court = court
+        self.title = title
+        self.post_date = post_date
+        self.publish_date = publish_date
+        self.content = content
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<Domestic %r>' % self.title
