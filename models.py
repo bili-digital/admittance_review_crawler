@@ -98,3 +98,62 @@ class Domestic(BaseMixin, db.Model):
 
     def __repr__(self):
         return '<Domestic %r>' % self.title
+
+class FuelPenaltyBasic(BaseMixin, db.Model):
+    __tablename__ = 'py_fuel_penalty_basic'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    transportation = db.Column(db.String(45))
+    car_number = db.Column(db.String(45))
+    period = db.Column(db.String(45))
+    should_paid_date = db.Column(db.DateTime)
+    supervisory_department = db.Column(db.String(45))
+    amount = db.Column(db.Integer)
+    comment = db.Column(db.String(45))
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, transportation, car_number, period, should_paid_date, supervisory_department,amount,comment,tenant_id, created_at="", updated_at=""):
+        self.transportation = transportation
+        self.car_number = car_number
+        self.period = period
+        self.should_paid_date = should_paid_date
+        self.supervisory_department = supervisory_department
+        self.amount = amount
+        self.comment = comment
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<FuelPenaltyBasic %r>' % self.title
+class FuelPenaltyExpire(BaseMixin, db.Model):
+    __tablename__ = 'py_fuel_penalty_expired'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    transportation = db.Column(db.String(45))
+    car_number = db.Column(db.String(45))
+    bill_number = db.Column(db.String(45))
+    should_paid_date = db.Column(db.DateTime)
+    supervisory_department = db.Column(db.String(45))
+    amount = db.Column(db.Integer)
+    comment = db.Column(db.String(45))
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, transportation, car_number, bill_number, should_paid_date, supervisory_department,amount,comment,tenant_id, created_at="", updated_at=""):
+        self.transportation = transportation
+        self.car_number = car_number
+        self.bill_number = bill_number
+        self.should_paid_date = should_paid_date
+        self.supervisory_department = supervisory_department
+        self.amount = amount
+        self.comment = comment
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<FuelPenaltyExpire %r>' % self.title
