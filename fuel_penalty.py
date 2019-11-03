@@ -164,8 +164,7 @@ class FuelPenaltyCrawler():
                 print(comment)
                 self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
                                       should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
-                                      amount=amount, comment=comment,
-                                      tenant_id=self.tenant_id)
+                                      amount=amount, comment=comment, tenant_id=self.tenant_id)
                 logging.info("Expire Fuel Finished")
 
             return True

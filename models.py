@@ -156,4 +156,28 @@ class FuelPenaltyExpire(BaseMixin, db.Model):
         self.updated_at = updated_at
 
     def __repr__(self):
-        return '<FuelPenaltyExpire %r>' % self.title
+        return '<FuelPenaltyExpire %r>' % self.transportation
+
+class TrafficPenalty(BaseMixin, db.Model):
+    __tablename__ = 'py_trafic_penalty'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(45))
+    violation_date = db.Column(db.DateTime)
+    should_paid_date = db.Column(db.DateTime)
+    amount = db.Column(db.Integer)
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, content, violation_date, should_paid_date, amount,tenant_id, created_at="", updated_at=""):
+        self.content = content
+        self.violation_date = violation_date
+        self.should_paid_date = should_paid_date
+        self.amount = amount
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<TrafficPenalty %r>' % self.content
