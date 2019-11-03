@@ -2,15 +2,15 @@ import requests
 import logging 
 from bs4 import BeautifulSoup 
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='current_wanted.log') 
-
 class CurrentWantCrawler():
 
     def __init__(self, model, db):
         self.db = db
         self.model = model
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='current_wanted.log') 
 
     def run(self):
         try:

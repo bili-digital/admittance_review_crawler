@@ -6,10 +6,6 @@ import urllib.request as urllib2
 from bs4 import BeautifulSoup
 
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='consumer_debt.log') 
-
 class ConsumerDebtCrawler():
 
     def __init__(self, model, db, driver, name, id_number, tenant_id):
@@ -19,6 +15,10 @@ class ConsumerDebtCrawler():
         self.tenant_id = tenant_id
         self.db = db
         self.model = model
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='consumer_debt.log') 
 
 
     def parse_date(self, date):

@@ -2,9 +2,6 @@ import logging
 import os
 import time
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='criminal_record_get.log') 
 
 class CurrentWantGetter():
 
@@ -14,6 +11,10 @@ class CurrentWantGetter():
         self.tenant_id = tenant_id
         self.db = db
         self.model = model
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='criminal_record_get.log') 
 
     def run(self):
         try:

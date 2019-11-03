@@ -11,10 +11,6 @@ from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='wanted.log') 
-
 class WantedCrawler():
     def __init__(self, model, db, driver, name, id_number, tenant_id):
         self.db = db
@@ -23,6 +19,11 @@ class WantedCrawler():
         self.name = name
         self.id_number = id_number
         self.tenant_id = tenant_id
+
+
+        logging.basicConfig(level=logging.DEBUG, 
+                            format='%(asctime)s - %(levelname)s : %(message)s', 
+                            filename='wanted.log') 
 
     def get_captcha(self, driver):
         img = driver.find_element_by_xpath(".//*[@id='reload-img']")
@@ -107,7 +108,7 @@ class WantedCrawler():
 
             result = self.driver.find_element_by_id('E8_WT_UNIT_NM').text
             self.model.create(status=result, tenant_id=self.tenant_id)
-            logging.info("Result: " + result)
+            logging.info("Wanted Finished")
             return True
 
         except Exception as e:

@@ -33,20 +33,20 @@ def start_crawler():
     tenant_id = request.args.get('tenant_id')
 
     total_result = {}
-    # consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-    # total_result['consumber_debt_result'] = consumber_debt_crawler.run()
+    consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+    total_result['consumber_debt_result'] = consumber_debt_crawler.run()
 
-    # criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-    # total_result['criminal_record_result'] = criminal_record_crawler.run()
+    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+    total_result['criminal_record_result'] = criminal_record_crawler.run()
 
-    # current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
-    # total_result['current_want_result'] = current_want_getter.run()
+    current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
+    total_result['current_want_result'] = current_want_getter.run()
 
-    # domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
-    # total_result['domestic_crawler_result'] = domestic_crawler.run()
+    domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+    total_result['domestic_crawler_result'] = domestic_crawler.run()
 
-    # fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birthday, tenant_id)
-    # total_result['fuel_penalty_crawler_result'] = fuel_penalty_crawler.run()
+    fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birthday, tenant_id)
+    total_result['fuel_penalty_crawler_result'] = fuel_penalty_crawler.run()
 
     wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
     total_result['wanted_crawler_result'] = wanted_crawler.run()

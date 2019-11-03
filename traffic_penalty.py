@@ -16,9 +16,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='trafic_penalty.log') 
 
 class TrafficPenaltyCrawler():
     def __init__(self, model, db, driver, id_number, birthday, tenant_id):
@@ -28,6 +25,10 @@ class TrafficPenaltyCrawler():
         self.id_number = id_number
         self.birthday = birthday
         self.tenant_id = tenant_id
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='trafic_penalty.log') 
 
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
@@ -145,6 +146,7 @@ class TrafficPenaltyCrawler():
                 self.driver.get('https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay' + href)
               else:
                 fetch = False
+                logging.info("traffic Finished")
                 return True
         except Exception as e:
             logging.error("error: " + str(e))

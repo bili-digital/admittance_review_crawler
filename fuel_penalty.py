@@ -16,10 +16,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='fuel_penalty.log') 
-
 class FuelPenaltyCrawler():
 
     def __init__(self, basic_model, expire_model, db, driver, id_number, birthday, tenant_id):
@@ -30,6 +26,10 @@ class FuelPenaltyCrawler():
         self.id_number = id_number
         self.birthday = birthday
         self.tenant_id = tenant_id
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='fuel_penalty.log') 
 
     def get_captcha(self, driver):
         img = driver.find_element_by_xpath(".//*[@id='pickimg1']")

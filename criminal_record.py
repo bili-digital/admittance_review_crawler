@@ -6,9 +6,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 
-logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='criminal_record.log') 
 class CriminalRecordCrawler():
 
     def __init__(self, model, db, driver, name, tenant_id):
@@ -17,6 +14,10 @@ class CriminalRecordCrawler():
         self.tenant_id = tenant_id
         self.db = db
         self.model = model
+
+        logging.basicConfig(level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s : %(message)s', 
+                    filename='criminal_record.log') 
 
     def parse_date(self, date):
         date_list = date.split('.')
