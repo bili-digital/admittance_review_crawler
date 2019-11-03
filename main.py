@@ -7,9 +7,9 @@ from current_wanted_get import CurrentWantGetter
 from domestic import DomesticCrawler
 from fuel_penalty import FuelPenaltyCrawler
 from traffic_penalty import TrafficPenaltyCrawler
-from server import app
-from server import db
-from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty
+from wanted import WantedCrawler
+from server import app, db
+from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -48,8 +48,8 @@ def start_crawler():
     # fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birthday, tenant_id)
     # total_result['fuel_penalty_crawler_result'] = fuel_penalty_crawler.run()
 
-    traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birthday, tenant_id)
-    total_result['traffic_penalty_crawler_result'] = traffic_penalty_crawler.run()
+    wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
+    total_result['wanted_crawler_result'] = wanted_crawler.run()
 
     driver.close()
     return jsonify(total_result)

@@ -181,3 +181,21 @@ class TrafficPenalty(BaseMixin, db.Model):
 
     def __repr__(self):
         return '<TrafficPenalty %r>' % self.content
+
+class Wanted(BaseMixin, db.Model):
+    __tablename__ = 'py_wanteds'
+    # 設定 primary_key
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(45))
+    tenant_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __init__(self, status,tenant_id, created_at="", updated_at=""):
+        self.status = status
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<Wanted %r>' % self.status
