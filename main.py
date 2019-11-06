@@ -29,7 +29,7 @@ def start_crawler():
     driver = webdriver.Chrome(os.getcwd() + "/chromedriver", options = options)
     name = request.args.get('name')
     id_number = request.args.get('id_number')
-    birthday = request.args.get('birthday')
+    birthday = request.args.get('birth_date')
     tenant_id = request.args.get('tenant_id')
 
     total_result = {}
@@ -47,6 +47,9 @@ def start_crawler():
 
     fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birthday, tenant_id)
     total_result['fuel_penalty_crawler_result'] = fuel_penalty_crawler.run()
+
+    traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birthday, tenant_id)
+    total_result['traffic_penalty_crawler_result'] = traffic_penalty_crawler.run()
 
     wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
     total_result['wanted_crawler_result'] = wanted_crawler.run()
