@@ -14,10 +14,10 @@ from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPe
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-
+from dotenv import load_dotenv
 
 options = Options()
-# options.add_argument('--headless')
+options.add_argument('--headless')
 options.add_argument('--disable-gpu') 
 # For no-gui operation system user to set chrome driver 
 options.add_argument('--no-sandbox')
@@ -26,7 +26,10 @@ options.add_argument('--disable-dev-shm-usage')
 
 @app.route('/start_crawler', methods=['GET'])
 def start_crawler():
-    driver = webdriver.Chrome(os.getcwd() + "/chromedriver", options = options)
+    load_dotenv()
+    os.chdir('/home/johnliu/flaskapp')
+    driver = webdriver.Chrome('chromedriver', options = options)
+
     name = request.args.get('name')
     id_number = request.args.get('id_number')
     birthday = request.args.get('birth_date')

@@ -18,7 +18,8 @@ class ConsumerDebtCrawler():
 
         logging.basicConfig(level=logging.DEBUG, 
                     format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='consumer_debt.log') 
+                    filename='consumer_debt.log',
+                    pathname=os.getcwd() + 'consumer_debt.log') 
 
 
     def parse_date(self, date):
