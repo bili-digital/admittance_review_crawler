@@ -27,15 +27,15 @@ class FuelPenaltyCrawler():
         self.birthday = birthday
         self.tenant_id = tenant_id
 
-        logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='fuel_penalty.log') 
+      # logging.basicConfig(level=logging.DEBUG, 
+      #              format='%(asctime)s - %(levelname)s : %(message)s', 
+      #              filename='fuel_penalty.log') 
 
     def get_captcha(self, driver):
         img = driver.find_element_by_xpath(".//*[@id='pickimg1']")
         with open('captcha.png', 'wb') as file:
             file.write(img.screenshot_as_png)   
-        logging.info("Save Image")  
+      # logging.info("Save Image")  
         buffer = BytesIO()
         image = Image.open('captcha.png')
         image.save(buffer, format="PNG")
@@ -69,7 +69,7 @@ class FuelPenaltyCrawler():
             if r.json()['status'] == 'ready':
                 ret = r.json()['solution']['text']
                 break
-            logging.info("tring")  
+          # logging.info("tring")  
             time.sleep(5)
         return ret
     def parse_date(self, date):
@@ -97,7 +97,7 @@ class FuelPenaltyCrawler():
         driver.find_element_by_id("m3_warning").click()
         time.sleep(1)
         driver.find_element_by_id("submit_btn").click()
-        logging.info("Submit form")
+      # logging.info("Submit form")
         time.sleep(1)
         captcha_error = len(driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]"))
         data_error = len(driver.find_elements_by_xpath("//*[contains(text(), '請確認您輸入的證號及生日是否正確。')]"))
@@ -106,7 +106,7 @@ class FuelPenaltyCrawler():
         try:
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha = self.get_captcha(self.driver)
-            logging.info("captcha is " + captcha)  
+          # logging.info("captcha is " + captcha)  
             captcha_error, data_error = self.fill_data(self.driver, captcha)
             time.sleep(1)
 
@@ -114,11 +114,11 @@ class FuelPenaltyCrawler():
             if data_error ==1:
                 return False
             while captcha_error == 1 and count <= 5:
-                logging.info("retry Submit form")
-                logging.info("No. " + str(count))
+              # logging.info("retry Submit form")
+              # logging.info("No. " + str(count))
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
-                logging.info("new captcha is " + captcha)
+              # logging.info("new captcha is " + captcha)
                 elements = self.fill_data(self.driver, captcha)
                 count+=1
             
@@ -145,7 +145,7 @@ class FuelPenaltyCrawler():
                                       should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
                                       amount=amount, comment=comment,
                                       tenant_id=self.tenant_id)
-                logging.info("Basic Fuel Finished")
+              # logging.info("Basic Fuel Finished")
             for idx, row in enumerate(expired_amount_rows):
                 data = row.select('td')
                 transportation = data[0].text.strip()
@@ -165,12 +165,12 @@ class FuelPenaltyCrawler():
                 self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
                                       should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
                                       amount=amount, comment=comment, tenant_id=self.tenant_id)
-                logging.info("Expire Fuel Finished")
+              # logging.info("Expire Fuel Finished")
 
             return True
 
         except Exception as e:
-            logging.error("error: " + str(e))
+          # logging.error("error: " + str(e))
             print(e)
             return False
     
