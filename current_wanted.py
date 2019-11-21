@@ -8,9 +8,9 @@ class CurrentWantCrawler():
         self.db = db
         self.model = model
 
-        logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='current_wanted.log') 
+      # logging.basicConfig(level=logging.DEBUG, 
+      #              format='%(asctime)s - %(levelname)s : %(message)s', 
+      #              filename='current_wanted.log') 
 
     def run(self):
         try:
@@ -18,7 +18,7 @@ class CurrentWantCrawler():
             source_code = BeautifulSoup(response.text, 'html.parser')
             data = source_code.find_all('div', 'notification-page__link')
             for data_row in data:
-                logging.info("Get data")
+              # logging.info("Get data")
                 name = data_row.contents[0].strip()
                 id_number = data_row.contents[2].strip()
                 result = self.db.session.query(self.model).filter(self.model.name ==name, 
@@ -30,7 +30,7 @@ class CurrentWantCrawler():
             
             return True
         except Exception as e:
-            logging.error("error: " + str(e))
+          # logging.error("error: " + str(e))
             print(e)
             return False
             

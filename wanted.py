@@ -21,15 +21,15 @@ class WantedCrawler():
         self.tenant_id = tenant_id
 
 
-        logging.basicConfig(level=logging.DEBUG, 
-                            format='%(asctime)s - %(levelname)s : %(message)s', 
-                            filename='wanted.log') 
+      # logging.basicConfig(level=logging.DEBUG, 
+      #                      format='%(asctime)s - %(levelname)s : %(message)s', 
+      #                      filename='wanted.log') 
 
     def get_captcha(self, driver):
         img = driver.find_element_by_xpath(".//*[@id='reload-img']")
         with open('captcha.png', 'wb') as file:
             file.write(img.screenshot_as_png)    
-        logging.info("Save Image")                                                                         
+      # logging.info("Save Image")                                                                         
         buffer = BytesIO()
         image = Image.open('captcha.png')
         image.save(buffer, format="PNG")
@@ -63,7 +63,7 @@ class WantedCrawler():
             if r.json()['status'] == 'ready':
                 ret = r.json()['solution']['text']
                 break
-            logging.info("tring")  
+          # logging.info("tring")  
             time.sleep(5)
             print('tring')
         return ret
@@ -83,7 +83,7 @@ class WantedCrawler():
 
         driver.find_element_by_id("queryBtn").click()
 
-        logging.info("Submit form")
+      # logging.info("Submit form")
         time.sleep(2)
         elements = driver.find_elements_by_xpath("//*[contains(text(), 'Ok')]")
         return elements
@@ -91,28 +91,28 @@ class WantedCrawler():
         try:
             self.driver.get('''https://iweb2.npa.gov.tw/NpaE8Server/CE_Query.jsp''')
             captcha = self.get_captcha(self.driver)
-            logging.info("captcha is " + captcha)  
+          # logging.info("captcha is " + captcha)  
             elements = self.fill_data(self.driver, captcha)
             time.sleep(1)
 
             count = 0
             while len(elements) != 0 and count <= 5:
-                logging.info("retry Submit form")
-                logging.info("No. " + str(count))
+              # logging.info("retry Submit form")
+              # logging.info("No. " + str(count))
                 self.driver.find_element_by_id("smartAlertClose").click()
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
-                logging.info("new captcha is " + captcha)
+              # logging.info("new captcha is " + captcha)
                 elements = self.fill_data(self.driver, captcha)
                 count+=1
 
             result = self.driver.find_element_by_id('E8_WT_UNIT_NM').text
             self.model.create(status=result, tenant_id=self.tenant_id)
-            logging.info("Wanted Finished")
+          # logging.info("Wanted Finished")
             return True
 
         except Exception as e:
-            logging.error("error: " + str(e))
+          # logging.error("error: " + str(e))
             print(e)
             return False
     

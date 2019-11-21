@@ -26,9 +26,9 @@ class TrafficPenaltyCrawler():
         self.birthday = birthday
         self.tenant_id = tenant_id
 
-        logging.basicConfig(level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s : %(message)s', 
-                    filename='trafic_penalty.log') 
+      # logging.basicConfig(level=logging.DEBUG, 
+      #              format='%(asctime)s - %(levelname)s : %(message)s', 
+      #              filename='trafic_penalty.log') 
 
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
@@ -44,7 +44,7 @@ class TrafficPenaltyCrawler():
         img = driver.find_element_by_xpath(".//*[@id='pickimg1']")
         with open('captcha.png', 'wb') as file:
             file.write(img.screenshot_as_png)   
-        logging.info("Save Image")  
+      # logging.info("Save Image")  
         buffer = BytesIO()
         image = Image.open('captcha.png')
         image.save(buffer, format="PNG")
@@ -78,7 +78,7 @@ class TrafficPenaltyCrawler():
             if r.json()['status'] == 'ready':
                 ret = r.json()['solution']['text']
                 break
-            logging.info("tring")  
+          # logging.info("tring")  
             time.sleep(5)
             print('tring')
         return ret
@@ -103,24 +103,24 @@ class TrafficPenaltyCrawler():
 
         driver.find_element_by_id("search1").click()
 
-        logging.info("Submit form")
+      # logging.info("Submit form")
         elements = driver.find_elements_by_xpath("//*[contains(text(), '線上繳費')]")
         return elements
     def run(self):
         try:
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay''')
             captcha = self.get_captcha(self.driver)
-            logging.info("captcha is " + captcha)  
+          # logging.info("captcha is " + captcha)  
             elements = self.fill_data(self.driver, captcha)
             time.sleep(1)
 
             count = 0
             while len(elements) == 0 and count <= 5:
-                logging.info("retry Submit form")
-                logging.info("No. " + str(count))
+              # logging.info("retry Submit form")
+              # logging.info("No. " + str(count))
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
-                logging.info("new captcha is " + captcha)
+              # logging.info("new captcha is " + captcha)
                 elements = self.fill_data(self.driver, captcha)
                 count+=1
             
@@ -146,10 +146,10 @@ class TrafficPenaltyCrawler():
                 self.driver.get('https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay' + href)
               else:
                 fetch = False
-                logging.info("traffic Finished")
+              # logging.info("traffic Finished")
                 return True
         except Exception as e:
-            logging.error("error: " + str(e))
+          # logging.error("error: " + str(e))
             print(e)
             return False
     
