@@ -15,6 +15,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from dotenv import load_dotenv
+load_dotenv(dotenv_path='/home/johnliu/flaskapp/.env')
 
 options = Options()
 options.add_argument('--headless')
@@ -26,9 +27,8 @@ options.add_argument('--disable-dev-shm-usage')
 
 @app.route('/start_crawler', methods=['GET'])
 def start_crawler():
-    load_dotenv()
-    os.chdir('/home/johnliu/flaskapp')
-    driver = webdriver.Chrome('chromedriver', options = options)
+    os.chdir(os.getenv('PRODUCTION_PATH'))
+    driver = webdriver.Chrome(os.getenv('DRIVER_PATH'), options = options)
 
     name = request.args.get('name')
     id_number = request.args.get('id_number')
@@ -39,8 +39,8 @@ def start_crawler():
     consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumber_debt_result'] = consumber_debt_crawler.run()
 
-    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-    total_result['criminal_record_result'] = criminal_record_crawler.run()
+    #criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+    #total_result['criminal_record_result'] = criminal_record_crawler.run()
 
     current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
     total_result['current_want_result'] = current_want_getter.run()
