@@ -8,8 +8,9 @@ from domestic import DomesticCrawler
 from fuel_penalty import FuelPenaltyCrawler
 from traffic_penalty import TrafficPenaltyCrawler
 from wanted import WantedCrawler
+from criminal import CriminalCrawler
 from server import app, db
-from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted
+from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted, Criminal
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -33,6 +34,10 @@ def start_crawler():
     tenant_id = request.args.get('tenant_id')
 
     total_result = {}
+
+    criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
+    total_result['criminal_crawler_result'] = criminal_crawler.run()
+
     consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumber_debt_result'] = consumber_debt_crawler.run()
 
