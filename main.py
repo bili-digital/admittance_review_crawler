@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 from consumer_debt import ConsumerDebtCrawler
 from criminal_record import CriminalRecordCrawler
 from current_wanted import CurrentWantCrawler
-from current_wanted_get import CurrentWantGetter
 from domestic import DomesticCrawler
 from fuel_penalty import FuelPenaltyCrawler
 from traffic_penalty import TrafficPenaltyCrawler
@@ -38,14 +37,11 @@ def start_crawler():
     criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
     total_result['criminal'] = criminal_crawler.run()
 
-    consumber_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-    total_result['consumber_debt'] = consumber_debt_crawler.run()
+    consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+    total_result['consumer_debt'] = consumer_debt_crawler.run()
 
     criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
     total_result['criminal_record'] = criminal_record_crawler.run()
-
-    current_want_getter = CurrentWantGetter(CurrentWanted, db, name, id_number, tenant_id)
-    total_result['current_want'] = current_want_getter.run()
 
     domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
     total_result['domestic'] = domestic_crawler.run()
