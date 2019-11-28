@@ -14,10 +14,11 @@ from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPe
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='/home/johnliu/flaskapp/.env')
 
 options = Options()
-# options.add_argument('--headless')
+options.add_argument('--headless')
 options.add_argument('--disable-gpu') 
 # For no-gui operation system user to set chrome driver 
 options.add_argument('--no-sandbox')
@@ -26,7 +27,9 @@ options.add_argument('--disable-dev-shm-usage')
 
 @app.route('/start_crawler', methods=['GET'])
 def start_crawler():
-    driver = webdriver.Chrome(os.getcwd() + "/chromedriver", options = options)
+    os.chdir(os.getenv('PRODUCTION_PATH'))
+    driver = webdriver.Chrome(os.getenv('DRIVER_PATH'), options = options)
+
     name = request.args.get('name')
     id_number = request.args.get('id_number')
     birthday = request.args.get('birth_date')
@@ -40,8 +43,8 @@ def start_crawler():
     consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-    total_result['criminal_record'] = criminal_record_crawler.run()
+    # criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+    # total_result['criminal_record'] = criminal_record_crawler.run()
 
     domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
     total_result['domestic'] = domestic_crawler.run()

@@ -70,3 +70,4 @@ class ConsumerDebtCrawler():
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)
             return False
+
