@@ -7,6 +7,7 @@ import pymysql
 import base64
 import requests
 import re
+import traceback
 from io import BytesIO
 from PIL import Image
 from selenium import webdriver
@@ -119,13 +120,13 @@ class FuelPenaltyCrawler():
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
               # logging.info("new captcha is " + captcha)
-                elements = self.fill_data(self.driver, captcha)
+                captcha_error, data_error = self.fill_data(self.driver, captcha)
                 count+=1
             
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             basic_amount_rows = soup.select('#info tr.even, #info tr.odd')
             expired_amount_rows = soup.select('#info2 tr.even, #info2 tr.odd')
-            for idx, row in enumerate(basic_amount_rows):
+            for row in enumerate(basic_amount_rows):
                 data = row.select('td')
                 transportation = data[1].text.strip()
                 car_number = data[2].text.strip()
@@ -146,7 +147,7 @@ class FuelPenaltyCrawler():
                                       amount=amount, comment=comment,
                                       tenant_id=self.tenant_id)
               # logging.info("Basic Fuel Finished")
-            for idx, row in enumerate(expired_amount_rows):
+            for row in enumerate(expired_amount_rows):
                 data = row.select('td')
                 transportation = data[0].text.strip()
                 car_number = data[1].text.strip()
@@ -169,8 +170,9 @@ class FuelPenaltyCrawler():
 
             return True
 
-        except Exception as e:
+        except Exception:
           # logging.error("error: " + str(e))
-            print(e)
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False
     

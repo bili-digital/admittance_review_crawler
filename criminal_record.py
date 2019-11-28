@@ -1,6 +1,7 @@
 import logging 
 import os
 import time
+import traceback
 import urllib.request as urllib2
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -56,7 +57,8 @@ class CriminalRecordCrawler():
                                       reason=reason, tenant_id=self.tenant_id)
                   # logging.info("Criminal Record Crawler Finished")
             return True
-        except Exception as e:
+        except Exception:
           # logging.error("error: " + str(e))
-            print(e)
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False

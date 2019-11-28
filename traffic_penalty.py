@@ -7,6 +7,7 @@ import pymysql
 import base64
 import requests
 import re
+import traceback
 from io import BytesIO
 from PIL import Image
 from selenium import webdriver
@@ -148,8 +149,9 @@ class TrafficPenaltyCrawler():
                 fetch = False
               # logging.info("traffic Finished")
                 return True
-        except Exception as e:
+        except Exception:
           # logging.error("error: " + str(e))
-            print(e)
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False
     

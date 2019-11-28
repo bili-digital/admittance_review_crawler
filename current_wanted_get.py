@@ -1,6 +1,7 @@
 import logging 
 import os
 import time
+import traceback
 
 
 class CurrentWantGetter():
@@ -26,7 +27,8 @@ class CurrentWantGetter():
               return 'criminal'
             else:
               return True
-        except Exception as e:
-          # logging.error("error: " + str(e))
-            print(e)
+        except Exception:
+            # logging.error("error: " + str(e))
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False

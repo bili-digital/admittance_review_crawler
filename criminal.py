@@ -7,6 +7,7 @@ import pymysql
 import base64
 import requests
 import re
+import traceback
 from io import BytesIO
 from PIL import Image
 from selenium import webdriver
@@ -116,8 +117,9 @@ class CriminalCrawler():
                 self.model.create(status="abnormal", tenant_id=self.tenant_id)  
             # logging.info("Criminal Record Crawler Finished")             
             return True
-        except Exception as e:
-            self.model.create(status="abnormal", tenant_id=self.tenant_id)  
+        except Exception:
+            self.model.create(status="abnormal", tenant_id=self.tenant_id) 
             # logging.error("error: " + str(e))
-            print(e)
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False

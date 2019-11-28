@@ -2,6 +2,7 @@ import logging
 import os
 import time
 import re
+import traceback
 import urllib.request as urllib2
 from bs4 import BeautifulSoup 
 
@@ -70,4 +71,6 @@ class DomesticCrawler():
             if(str(e).find('unexpected alert open') != -1):
               return 'Id Error'
             else:
+              lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+              print(lastCallStack)
               return False

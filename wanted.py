@@ -6,6 +6,7 @@ import time
 import pymysql
 import base64
 import requests
+import traceback
 from PIL import Image
 from io import BytesIO
 from selenium import webdriver
@@ -111,8 +112,9 @@ class WantedCrawler():
           # logging.info("Wanted Finished")
             return True
 
-        except Exception as e:
+        except Exception:
           # logging.error("error: " + str(e))
-            print(e)
+            lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
+            print(lastCallStack)
             return False
     
