@@ -25,7 +25,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 
 
-@app.route('/start_crawler', methods=['GET'])
+@app.route('/crawler/start_crawler', methods=['GET'])
 def start_crawler():
     os.chdir(os.getenv('PRODUCTION_PATH'))
     driver = webdriver.Chrome(os.getenv('DRIVER_PATH'), options = options)
@@ -71,4 +71,4 @@ def start_current_wanted_crawler():
     driver.close()
     return jsonify(result)
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

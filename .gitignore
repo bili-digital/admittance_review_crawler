@@ -4,3 +4,4 @@ chromedriver
 *.png
 *.pyc
 env
+uwsgi
