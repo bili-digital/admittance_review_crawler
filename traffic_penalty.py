@@ -148,7 +148,36 @@ class TrafficPenaltyCrawler():
               else:
                 fetch = False
               # logging.info("traffic Finished")
-                return True
+            
+            legal = self.driver.find_element_by_name("legal") 
+            legal.click()
+            time.sleep(2)
+            legal_fetch = True
+            while legal_fetch:
+                soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                next_button = soup.select("#next")
+                rows = soup.select('tr.even, tr.odd')
+                for idx, row in enumerate(rows):
+                  data = row.select('td')
+                  violation_date = self.parse_date(data[1].text.strip())
+                  content = data[0].text.strip() + '、' + data[2].text.strip()
+                  amount = data[3].text.strip()
+                  should_paid_date = self.parse_date(data[4].text.strip())
+                  print(violation_date)
+                  print(content)
+                  print(amount)
+                  print(should_paid_date)
+                  self.model.create(violation_date=violation_date, content=content, amount=amount,
+                                    should_paid_date=should_paid_date, tenant_id=self.tenant_id)
+                if len(next_button) > 0:
+                  href = next_button[0]['href']
+                  self.driver.get('https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay' + href)
+                else:
+                  legal_fetch = False
+                # logging.info("traffic Finished")
+                  return True
+
+            
         except Exception:
           # logging.error("error: " + str(e))
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
