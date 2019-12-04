@@ -94,9 +94,9 @@ class FuelPenaltyCrawler():
         birthday.send_keys(self.birthday)
         answer.send_keys(captcha)
         # remove datepicker ui
-        time.sleep(1)
+        time.sleep(2)
         driver.find_element_by_id("m3_warning").click()
-        time.sleep(1)
+        time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
       # logging.info("Submit form")
         time.sleep(1)
@@ -126,7 +126,7 @@ class FuelPenaltyCrawler():
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             basic_amount_rows = soup.select('#info tr.even, #info tr.odd')
             expired_amount_rows = soup.select('#info2 tr.even, #info2 tr.odd')
-            for row in enumerate(basic_amount_rows):
+            for idx, row in enumerate(basic_amount_rows):
                 data = row.select('td')
                 transportation = data[1].text.strip()
                 car_number = data[2].text.strip()
@@ -147,7 +147,7 @@ class FuelPenaltyCrawler():
                                       amount=amount, comment=comment,
                                       tenant_id=self.tenant_id)
               # logging.info("Basic Fuel Finished")
-            for row in enumerate(expired_amount_rows):
+            for idx, row in enumerate(expired_amount_rows):
                 data = row.select('td')
                 transportation = data[0].text.strip()
                 car_number = data[1].text.strip()
