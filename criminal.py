@@ -14,6 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -98,6 +99,7 @@ class CriminalCrawler():
 
     def run(self):
         try:
+            print('crawler start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''http://service.moj.gov.tw/criminal/index.asp''')
             checkbox = self.driver.find_element_by_name("doChk")
             checkbox.click()

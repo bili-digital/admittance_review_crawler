@@ -5,7 +5,7 @@ import re
 import traceback
 import urllib.request as urllib2
 from bs4 import BeautifulSoup
-
+from datetime import datetime
 
 class ConsumerDebtCrawler():
 
@@ -29,6 +29,7 @@ class ConsumerDebtCrawler():
 
     def run(self):
         try:
+            print('consumer debt start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''http://cdcb.judicial.gov.tw/abbs/wkw/WHD9A01.jsp''')
             name = self.driver.find_element_by_name("clnm")
             id_number = self.driver.find_element_by_name("idno")

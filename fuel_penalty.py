@@ -14,6 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -105,6 +106,7 @@ class FuelPenaltyCrawler():
         return captcha_error, data_error
     def run(self):
         try:
+            print('fuel_penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  

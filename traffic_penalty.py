@@ -14,7 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 from dotenv import load_dotenv
-
+from datetime import datetime
 load_dotenv()
 
 
@@ -109,6 +109,7 @@ class TrafficPenaltyCrawler():
         return elements
     def run(self):
         try:
+            print('traffic penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  

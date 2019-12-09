@@ -5,6 +5,7 @@ import re
 import traceback
 import urllib.request as urllib2
 from bs4 import BeautifulSoup 
+from datetime import datetime
 
 class DomesticCrawler():
 
@@ -27,6 +28,7 @@ class DomesticCrawler():
 
     def run(self):
         try:
+            print('domestic start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''http://domestic.judicial.gov.tw/abbs/wkw/WHD9HN01.jsp''')
 
             name = self.driver.find_element_by_name("clnm")

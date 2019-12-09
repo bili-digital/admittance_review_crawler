@@ -11,6 +11,7 @@ from PIL import Image
 from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from datetime import datetime
 
 class WantedCrawler():
     def __init__(self, model, db, driver, name, id_number, tenant_id):
@@ -90,6 +91,7 @@ class WantedCrawler():
         return elements
     def run(self):
         try:
+            print('wanted start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://iweb2.npa.gov.tw/NpaE8Server/CE_Query.jsp''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  
