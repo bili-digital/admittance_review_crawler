@@ -96,7 +96,7 @@ class FuelPenaltyCrawler():
         answer.send_keys(captcha)
         # remove datepicker ui
         time.sleep(2)
-        driver.find_element_by_id("m3_warning").click()
+        driver.find_element_by_id("pickimg1").click()
         time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
       # logging.info("Submit form")
