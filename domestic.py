@@ -6,6 +6,7 @@ import traceback
 import urllib.request as urllib2
 from bs4 import BeautifulSoup 
 from datetime import datetime
+from selenium.webdriver.support.ui import Select
 
 class DomesticCrawler():
 
@@ -31,12 +32,14 @@ class DomesticCrawler():
             print('domestic start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''http://domestic.judicial.gov.tw/abbs/wkw/WHD9HN01.jsp''')
 
+            select = Select(self.driver.find_element_by_name('kdid'))  # 实例化Select
             name = self.driver.find_element_by_name("clnm")
             id_number = self.driver.find_element_by_name("idno")
 
             name.clear()
             id_number.clear()
 
+            select.select_by_value("02 監護輔助宣告事件 N")
             name.send_keys(self.name)
             id_number.send_keys(self.id_number)
 
