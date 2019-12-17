@@ -8,6 +8,7 @@ from fuel_penalty import FuelPenaltyCrawler
 from traffic_penalty import TrafficPenaltyCrawler
 from wanted import WantedCrawler
 from criminal import CriminalCrawler
+from identifier_checker import IdentifierChecker
 from server import app, db
 from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted, Criminal
 
@@ -58,6 +59,21 @@ def start_crawler():
     wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
     total_result['wanted'] = wanted_crawler.run()
 
+    driver.close()
+    return jsonify(total_result)
+
+@app.route('/crawler/tenant_check_crawler', methods=['GET'])
+def tenant_check_crawler():
+    driver = webdriver.Chrome(os.getcwd() + '/chromedriver', options = options)
+
+    id_number = request.args.get('id_number')
+    birthday = request.args.get('birth_date')
+
+    total_result = {}
+
+    identifier_checker = IdentifierChecker(db, driver, id_number, birthday)
+    total_result['result'] = identifier_checker.run()
+    
     driver.close()
     return jsonify(total_result)
 
