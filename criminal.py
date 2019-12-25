@@ -110,6 +110,18 @@ class CriminalCrawler():
             captcha = self.get_captcha(self.driver)
             # logging.info("captcha is " + captcha)  
             alert = self.fill_data(self.driver, captcha)
+            count = 0
+            while alert.text == '驗證碼不正確!' and count <= 5:
+              # logging.info("retry Submit form")
+              # logging.info("No. " + str(count))
+                time.sleep(1)
+                alert.accept() 
+                captcha = self.get_captcha(self.driver)
+              # logging.info("new captcha is " + captcha)
+                alert = self.fill_data(self.driver, captcha)
+                count+=1
+                print(alert.text)
+
             print(alert.text)
             if(alert.text == '無符合的通緝犯'):
                 alert.accept()
