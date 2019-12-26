@@ -77,7 +77,7 @@ def tenant_check_crawler():
     driver.close()
     return jsonify(total_result)
 
-@app.route('/start_current_wanted_crawler', methods=['GET'])
+@app.route('/crawler/start_current_wanted_crawler', methods=['GET'])
 def start_current_wanted_crawler():
 
     driver = webdriver.Chrome(os.getcwd() + "/chromedriver", options = options)
