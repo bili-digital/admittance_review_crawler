@@ -77,13 +77,16 @@ class FuelPenaltyCrawler():
         return ret
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
-        date_list[0] = str(int(date_list[0]) + 1911)
-        if int(date_list[1]) < 10:
-            date_list[1] = '0' + str(date_list[1])
-        if int(date_list[2]) < 10:
-            date_list[2] = '0' + str(date_list[2])
-
-        return date_list[0] + '-' + date_list[1] + '-' + date_list[2]
+        if len(date_list) > 1:
+          date_list[0] = str(int(date_list[0]) + 1911)
+          if int(date_list[1]) < 10:
+              date_list[1] = '0' + str(date_list[1])
+          if int(date_list[2]) < 10:
+              date_list[2] = '0' + str(date_list[2])
+          result = date_list[0] + '-' + date_list[1] + '-' + date_list[2]
+        else:
+          result = '2000-01-01'
+        return result
     def fill_data(self, driver, captcha):
         id_number = driver.find_element_by_id("idNo")
         birthday = driver.find_element_by_id("birthday")
