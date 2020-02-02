@@ -68,7 +68,6 @@ class FuelPenaltyCrawler():
             }
             r = requests.post("https://api.anti-captcha.com/getTaskResult", json=data)
             r.raise_for_status()
-            print(r.json())
             if r.json()['status'] == 'ready':
                 ret = r.json()['solution']['text']
                 break
