@@ -44,8 +44,8 @@ def start_crawler():
     consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
     total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-    # criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-    # total_result['criminal_record'] = criminal_record_crawler.run()
+    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+    total_result['criminal_record'] = criminal_record_crawler.run()
 
     domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
     total_result['domestic'] = domestic_crawler.run()
