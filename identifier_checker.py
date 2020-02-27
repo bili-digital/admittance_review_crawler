@@ -81,30 +81,42 @@ class IdentifierChecker():
 
         return date_list[0] + '-' + date_list[1] + '-' + date_list[2]
     def fill_fuel_data(self, driver, captcha):
-        id_number = driver.find_element_by_id("idNo")
+
+
+        id_number = driver.find_element_by_id("id1")
         birthday = driver.find_element_by_id("birthday")
-        answer = driver.find_element_by_name("validateStr")
+        answer = driver.find_element_by_id("validateStr")
 
         id_number.clear()
         birthday.clear()
         answer.clear()
+
         id_number.send_keys(self.id_number)
         birthday.send_keys(self.birthday)
-        answer.send_keys(captcha)
+        answer.send_keys('GGGGG')
+
         # remove datepicker ui
-        time.sleep(2)
-        driver.find_element_by_id("pickimg1").click()
-        time.sleep(2)
-        driver.find_element_by_id("submit_btn").click()
+        time.sleep(1)
+        driver.find_element_by_id("m3_warning").click()
+        time.sleep(1)
+
+        driver.find_element_by_id("search1").click()
       # logging.info("Submit form")
         time.sleep(1)
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
-        form_text = soup.select('#fuelFeeForm')[0].text
-        captcha_error = form_text.find('驗證碼輸入錯誤')
-        if form_text.find('身分證或居留證格式錯誤') != -1:
+        form_text_ele = soup.select('#validateStr1')
+        id_error_ele = soup.select('#id1-error')
+        header_elem = soup.select('#headerMessage')
+      
+        if len(form_text_ele) != 0 and form_text_ele[0].text == '驗證碼輸入錯誤':
+          captcha_error = 1
+        else:
+          captcha_error = 0
+
+        if len(id_error_ele) != 0 and id_error_ele[0].text == '身分證或居留證格式錯誤':
           data_error = 1
-        elif soup.select('#headerMessage')[0].text == '請確認您輸入的證號及生日是否正確。':
+        elif len(header_elem) != 0 and header_elem[0].text == '請確認您輸入的證號及生日是否正確。':
           data_error = 1
         else:
           data_error = 0        
@@ -112,7 +124,7 @@ class IdentifierChecker():
     def run(self):
         try:
             print('identifier start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
+            self.driver.get('''https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  
             captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
@@ -122,7 +134,10 @@ class IdentifierChecker():
             print('captcha_error' + str(captcha_error))
             if data_error != 0:
                 return False
-            while captcha_error != -1 and count <= 5:
+            while captcha_error != 0 and count < 5:
+              if count == 5:
+                print('captcha error too much times')
+                return False
               # logging.info("retry Submit form")
               # logging.info("No. " + str(count))
                 time.sleep(1)
