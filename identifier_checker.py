@@ -93,7 +93,7 @@ class IdentifierChecker():
 
         id_number.send_keys(self.id_number)
         birthday.send_keys(self.birthday)
-        answer.send_keys('GGGGG')
+        answer.send_keys(captcha)
 
         # remove datepicker ui
         time.sleep(1)
