@@ -105,27 +105,24 @@ class FuelPenaltyCrawler():
       # logging.info("Submit form")
         time.sleep(1)
         captcha_error = len(driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]"))
-        data_error = len(driver.find_elements_by_xpath("//*[contains(text(), '請確認您輸入的證號及生日是否正確。')]"))
-        return captcha_error, data_error
+        return captcha_error
     def run(self):
         try:
             print('fuel_penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  
-            captcha_error, data_error = self.fill_data(self.driver, captcha)
+            captcha_error = self.fill_data(self.driver, captcha)
             time.sleep(1)
 
             count = 0
-            if data_error ==1:
-                return False
             while captcha_error == 1 and count <= 5:
               # logging.info("retry Submit form")
               # logging.info("No. " + str(count))
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
               # logging.info("new captcha is " + captcha)
-                captcha_error, data_error = self.fill_data(self.driver, captcha)
+                captcha_error = self.fill_data(self.driver, captcha)
                 count+=1
             
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
