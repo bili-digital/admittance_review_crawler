@@ -33,7 +33,7 @@ class CriminalCrawler():
       #              filename='criminal_record.log') 
 
     def get_captcha(self, driver):
-        img = driver.find_element_by_xpath(".//*[@id='imgCaptcha']")
+        img = driver.find_element_by_xpath(".//*[@id='valiCode']")
         with open('captcha.png', 'wb') as file:
             file.write(img.screenshot_as_png)   
       # logging.info("Save Image")  
@@ -76,18 +76,18 @@ class CriminalCrawler():
         return ret
 
     def fill_data(self, driver, captcha):
-        name = driver.find_element_by_name("txtname")
+        name = driver.find_element_by_name("CriminalName")
         name.clear()
         name.send_keys(self.name)
-        id_number = driver.find_element_by_name("txtId")
+        id_number = driver.find_element_by_name("CriminalIdNo")
         id_number.clear()
         id_number.send_keys(self.id_number)
-        answer = driver.find_element_by_name("txtCaptcha")
+        answer = driver.find_element_by_name("WaitValidateCode")
         answer.clear()
         answer.send_keys(captcha)
-        submit = driver.find_element_by_name("submit")
+        submit = driver.find_element_by_id("QueryButton")
         submit.click()
-        time.sleep(2)
+        time.sleep(1)
         alert = driver.switch_to.alert
 
         return alert
@@ -100,12 +100,10 @@ class CriminalCrawler():
     def run(self):
         try:
             print('crawler start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            self.driver.get('''http://service.moj.gov.tw/criminal/index.asp''')
-            checkbox = self.driver.find_element_by_name("doChk")
+            self.driver.get('''https://service.moj.gov.tw/CriminalWanted''')
+            checkbox = self.driver.find_element_by_xpath('//label[@for="PrecautionsAccepted"]')
             checkbox.click()
-            button = self.driver.find_element_by_name("cmdQuery")
-            button.click()
-            time.sleep(2)
+            time.sleep(1)
 
             captcha = self.get_captcha(self.driver)
             # logging.info("captcha is " + captcha)  
@@ -123,7 +121,7 @@ class CriminalCrawler():
                 print(alert.text)
 
             print(alert.text)
-            if(alert.text == '無符合的通緝犯'):
+            if(alert.text == '查無資料'):
                 alert.accept()
                 self.model.create(status="normal", tenant_id=self.tenant_id)
             else:
