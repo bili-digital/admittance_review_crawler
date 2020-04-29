@@ -33,31 +33,31 @@ def start_crawler():
 
     name = request.args.get('name')
     id_number = request.args.get('id_number')
-    birthday = request.args.get('birth_date')
+    birth_date = request.args.get('birth_date')
     tenant_id = request.args.get('tenant_id')
 
     total_result = {}
+    if ( birth_date != None and id_number != None ):
+        fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birth_date, tenant_id)
+        total_result['fuel_penalty'] = fuel_penalty_crawler.run()
 
-    criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
-    total_result['criminal'] = criminal_crawler.run()
+        traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
+        total_result['traffic_penalty'] = traffic_penalty_crawler.run()
+    if ( name != None and id_number != None ):
+        criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
+        total_result['criminal'] = criminal_crawler.run()
 
-    consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-    total_result['consumer_debt'] = consumer_debt_crawler.run()
+        consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+        total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-    criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-    total_result['criminal_record'] = criminal_record_crawler.run()
+        domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+        total_result['domestic'] = domestic_crawler.run()
 
-    domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
-    total_result['domestic'] = domestic_crawler.run()
-
-    fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birthday, tenant_id)
-    total_result['fuel_penalty'] = fuel_penalty_crawler.run()
-
-    traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birthday, tenant_id)
-    total_result['traffic_penalty'] = traffic_penalty_crawler.run()
-
-    wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
-    total_result['wanted'] = wanted_crawler.run()
+        wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
+        total_result['wanted'] = wanted_crawler.run()
+    if ( name != None ):
+        criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+        total_result['criminal_record'] = criminal_record_crawler.run()
 
     driver.close()
     return jsonify(total_result)
