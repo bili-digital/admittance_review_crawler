@@ -58,7 +58,7 @@ def start_crawler():
         total_result['wanted'] = wanted_crawler.run()
     if ( name != None ):
         criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-        total_result['criminal_record'] = criminal_record_crawler.run()
+        criminal_record_crawler.run()
 
     if ( name != None or id_number != None ):
         missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
