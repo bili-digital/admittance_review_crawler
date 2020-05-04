@@ -218,3 +218,20 @@ class Criminal(BaseMixin, db.Model):
 
     def __repr__(self):
         return '<Criminal %r>' % self.status
+
+class MissingPerson(BaseMixin, db.Model):
+    __tablename__ = 'py_missing_people'
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(45))
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+    tenant_id = db.Column(db.Integer)
+
+    def __init__(self, status, tenant_id, created_at="", updated_at=""):
+        self.status = status
+        self.tenant_id = tenant_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+    def __repr__(self):
+        return '<MissingPerson %r>' % self.status

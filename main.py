@@ -9,8 +9,9 @@ from traffic_penalty import TrafficPenaltyCrawler
 from wanted import WantedCrawler
 from criminal import CriminalCrawler
 from identifier_checker import IdentifierChecker
+from missing_person import MissingPersonCrawler
 from server import app, db
-from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted, Criminal
+from models import ConsumerDebt, CriminalRecord, CurrentWanted, Domestic, FuelPenaltyBasic, FuelPenaltyExpire, TrafficPenalty, Wanted, Criminal, MissingPerson
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -58,6 +59,10 @@ def start_crawler():
     if ( name != None ):
         criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
         total_result['criminal_record'] = criminal_record_crawler.run()
+
+    if ( name != None or id_number != None ):
+        missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
+        total_result['missing_person'] = missing_person_crawler.run()
 
     driver.close()
     return jsonify(total_result)
