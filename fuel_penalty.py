@@ -144,10 +144,11 @@ class FuelPenaltyCrawler():
                 print(supervisory_department)
                 print(amount)
                 print(comment)
-                self.basic_model.create(transportation=transportation, car_number=car_number, period=period,
-                                      should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
-                                      amount=amount, comment=comment,
-                                      tenant_id=self.tenant_id)
+                if datetime.now().strftime('%Y-%m-%d') > should_paid_date:
+                  self.basic_model.create(transportation=transportation, car_number=car_number, period=period,
+                                        should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
+                                        amount=amount, comment=comment,
+                                        tenant_id=self.tenant_id)
               # logging.info("Basic Fuel Finished")
             for idx, row in enumerate(expired_amount_rows):
                 data = row.select('td')
@@ -165,9 +166,10 @@ class FuelPenaltyCrawler():
                 print(should_paid_date)
                 print(amount)
                 print(comment)
-                self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
-                                      should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
-                                      amount=amount, comment=comment, tenant_id=self.tenant_id)
+                if datetime.now().strftime('%Y-%m-%d') > should_paid_date:
+                  self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
+                                        should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
+                                        amount=amount, comment=comment, tenant_id=self.tenant_id)
               # logging.info("Expire Fuel Finished")
 
             return True
