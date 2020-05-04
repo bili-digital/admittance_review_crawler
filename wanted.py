@@ -71,23 +71,23 @@ class WantedCrawler():
         return ret
 
     def fill_data(self, driver, captcha):
-        wanted_name = driver.find_element_by_id("QS_NAME")
-        wanted_id = driver.find_element_by_id("QS_ID")
+        name = driver.find_element_by_id("QS_NAME")
+        id_number = driver.find_element_by_id("QS_ID")
         answer = driver.find_element_by_id("answer")
 
-        wanted_name.clear()
-        wanted_id.clear()
+        name.clear()
+        id_number.clear()
         answer.clear()
-        print(captcha)
-        wanted_name.send_keys(self.name)
-        wanted_id.send_keys(self.id_number)
+        if self.name != None:
+          name.send_keys(self.name)
+        if self.id_number != None:
+          id_number.send_keys(self.id_number)
         answer.send_keys(captcha)
 
         driver.find_element_by_id("queryBtn").click()
 
-      # logging.info("Submit form")
         time.sleep(2)
-        elements = driver.find_elements_by_xpath("//*[contains(text(), 'Ok')]")
+        elements = driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]")
         return elements
     def run(self):
         try:
@@ -100,12 +100,10 @@ class WantedCrawler():
 
             count = 0
             while len(elements) != 0 and count <= 5:
-              # logging.info("retry Submit form")
-              # logging.info("No. " + str(count))
-                self.driver.find_element_by_id("smartAlertClose").click()
+                buttons = self.driver.find_elements_by_class_name("btn.btn-default")
+                buttons[-1].click()
                 time.sleep(1)
                 captcha = self.get_captcha(self.driver)
-              # logging.info("new captcha is " + captcha)
                 elements = self.fill_data(self.driver, captcha)
                 count+=1
 
