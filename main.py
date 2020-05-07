@@ -44,10 +44,8 @@ def start_crawler():
 
         traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
         total_result['traffic_penalty'] = traffic_penalty_crawler.run()
-    if ( name != None and id_number != None ):
-        criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
-        total_result['criminal'] = criminal_crawler.run()
 
+    if ( name != None and id_number != None ):
         consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
         total_result['consumer_debt'] = consumer_debt_crawler.run()
 
@@ -56,13 +54,17 @@ def start_crawler():
 
         wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
         total_result['wanted'] = wanted_crawler.run()
+
+    if ( name != None or id_number != None ):
+        criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
+        total_result['criminal'] = criminal_crawler.run()
+
+        missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
+        total_result['missing_person'] = missing_person_crawler.run()
+
     if ( name != None ):
         criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
         criminal_record_crawler.run()
-
-    if ( name != None or id_number != None ):
-        missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
-        total_result['missing_person'] = missing_person_crawler.run()
 
     driver.close()
     return jsonify(total_result)
