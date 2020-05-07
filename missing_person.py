@@ -71,10 +71,8 @@ class MissingPersonCrawler():
         name.clear()
         id_number.clear()
         answer.clear()
-        if self.name != None:
-          name.send_keys(self.name)
-        if self.id_number != None:
-          id_number.send_keys(self.id_number)
+        name.send_keys(self.name or '')
+        id_number.send_keys(self.id_number or '')
         answer.send_keys(captcha)
 
         driver.find_element_by_id("queryBtn").click()

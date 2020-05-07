@@ -78,10 +78,10 @@ class CriminalCrawler():
     def fill_data(self, driver, captcha):
         name = driver.find_element_by_name("CriminalName")
         name.clear()
-        name.send_keys(self.name)
+        name.send_keys(self.name or '')
         id_number = driver.find_element_by_name("CriminalIdNo")
         id_number.clear()
-        id_number.send_keys(self.id_number)
+        id_number.send_keys(self.id_number or '')
         answer = driver.find_element_by_name("WaitValidateCode")
         answer.clear()
         answer.send_keys(captcha)
