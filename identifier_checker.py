@@ -82,10 +82,10 @@ class IdentifierChecker():
         return date_list[0] + '-' + date_list[1] + '-' + date_list[2]
     def fill_fuel_data(self, driver, captcha):
 
-
-        id_number = driver.find_element_by_id("id1")
+        id_number = driver.find_element_by_id("idNo")
         birthday = driver.find_element_by_id("birthday")
-        answer = driver.find_element_by_id("validateStr")
+        answer = driver.find_element_by_name("validateStr")
+
 
         id_number.clear()
         birthday.clear()
@@ -96,17 +96,14 @@ class IdentifierChecker():
         answer.send_keys(captcha)
 
         # remove datepicker ui
-        time.sleep(1)
-        driver.find_element_by_id("m3_warning").click()
-        time.sleep(1)
-
-        driver.find_element_by_id("search1").click()
+        time.sleep(2)
+        driver.find_element_by_id("submit_btn").click()
       # logging.info("Submit form")
         time.sleep(1)
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
-        form_text_ele = soup.select('#validateStr1')
-        id_error_ele = soup.select('#id1-error')
+        form_text_ele = soup.select('#validateStr.errors')
+        id_error_ele = soup.select('#idNo.errors')
         header_elem = soup.select('#headerMessage')
       
         if len(form_text_ele) != 0 and form_text_ele[0].text == '驗證碼輸入錯誤':
@@ -124,7 +121,7 @@ class IdentifierChecker():
     def run(self):
         try:
             print('identifier start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            self.driver.get('''https://www.mvdis.gov.tw/m3-emv-vil/vil/penaltyQueryPay''')
+            self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha = self.get_captcha(self.driver)
           # logging.info("captcha is " + captcha)  
             captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
