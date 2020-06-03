@@ -77,7 +77,7 @@ class MissingPersonCrawler():
 
         driver.find_element_by_id("queryBtn").click()
 
-        time.sleep(2)
+        time.sleep(5)
         elements = driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]")
         return elements
     def run(self):

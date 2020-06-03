@@ -103,7 +103,7 @@ class IdentifierChecker():
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         form_text_ele = soup.select('#validateStr.errors')
-        id_error_ele = soup.select('#idNo.errors')
+        id_error_ele = soup.select('#idNo-error')
         header_elem = soup.select('#headerMessage')
       
         if len(form_text_ele) != 0 and form_text_ele[0].text == '驗證碼輸入錯誤':
