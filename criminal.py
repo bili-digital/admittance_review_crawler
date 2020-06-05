@@ -58,7 +58,7 @@ class CriminalCrawler():
             self.fill_data(self.driver, captcha)
             WebDriverWait(self.driver, 4).until(EC.alert_is_present())
             alert = self.driver.switch_to.alert
-            while alert.text == '驗證碼不正確':
+            if alert.text == '驗證碼不正確':
                 alert.accept() 
                 raise AttributeError
 
