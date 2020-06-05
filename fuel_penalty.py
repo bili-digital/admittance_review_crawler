@@ -18,6 +18,7 @@ class FuelPenaltyCrawler():
         self.id_number = id_number
         self.birthday = birthday
         self.tenant_id = tenant_id
+        self.count = 0
 
 
     def parse_date(self, date):
@@ -110,8 +111,12 @@ class FuelPenaltyCrawler():
             lastCallStack = traceback.format_exc()
             print(lastCallStack)
             time.sleep(2)
-            self.run()
-
+            self.count += 1
+            if self.count < 5:
+                result = self.run()
+                return result
+            else:
+                return False
         except Exception:
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)

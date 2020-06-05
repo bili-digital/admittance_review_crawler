@@ -17,6 +17,7 @@ class TrafficPenaltyCrawler():
         self.id_number = id_number
         self.birthday = birthday
         self.tenant_id = tenant_id
+        self.count = 0
 
 
     def parse_date(self, date):
@@ -109,8 +110,16 @@ class TrafficPenaltyCrawler():
                 else:
                   legal_fetch = False
                   return True
-
-            
+        except AttributeError:
+            lastCallStack = traceback.format_exc()
+            print(lastCallStack)
+            time.sleep(2)
+            self.count += 1
+            if self.count < 5:
+                result = self.run()
+                return result
+            else:
+                return False
         except Exception:
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)

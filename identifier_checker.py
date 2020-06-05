@@ -15,7 +15,7 @@ class IdentifierChecker():
         self.driver = driver
         self.id_number = id_number
         self.birthday = birthday
-
+        self.count = 0
 
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
@@ -93,7 +93,12 @@ class IdentifierChecker():
             lastCallStack = traceback.format_exc()
             print(lastCallStack)
             time.sleep(2)
-            self.run()
+            self.count += 1
+            if self.count < 5:
+                result = self.run()
+                return result
+            else:
+                return False
 
         except Exception:
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
