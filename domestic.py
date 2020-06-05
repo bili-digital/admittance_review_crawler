@@ -1,9 +1,7 @@
-import logging 
 import os
 import time
 import re
 import traceback
-import urllib.request as urllib2
 from bs4 import BeautifulSoup 
 from datetime import datetime
 from selenium.webdriver.support.ui import Select
@@ -17,10 +15,7 @@ class DomesticCrawler():
         self.name = name
         self.id_number = id_number
         self.tenant_id = tenant_id
-
-        # logging.basicConfig(level=logging.DEBUG, 
-        #            format='%(asctime)s - %(levelname)s : %(message)s', 
-        #            filename='domestic.log') 
+ 
 
     def parse_date(self, date):
         date_list = date.split('/')
@@ -32,7 +27,7 @@ class DomesticCrawler():
             print('domestic start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''http://domestic.judicial.gov.tw/abbs/wkw/WHD9HN01.jsp''')
 
-            select = Select(self.driver.find_element_by_name('kdid'))  # 实例化Select
+            select = Select(self.driver.find_element_by_name('kdid'))
             name = self.driver.find_element_by_name("clnm")
             id_number = self.driver.find_element_by_name("idno")
 
@@ -43,16 +38,13 @@ class DomesticCrawler():
             name.send_keys(self.name)
             id_number.send_keys(self.id_number)
 
-          # logging.info("Start to query: " + self.name)
 
             self.driver.find_element_by_name("Button").click()
             time.sleep(1)
 
-          # logging.info("On query result page")
 
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             criminal_rows = soup.find_all("tr")
-          # logging.info("Start to enumerate criminal rows")
             for idx, criminal_row in enumerate(criminal_rows):
                 if idx <= 8:
                     continue
@@ -60,7 +52,6 @@ class DomesticCrawler():
                     data = criminal_row.select('td')
                     if len(data) < 6:
                         break
-                  # logging.info("Get data for title: " + data[1].text)
                     court = data[1].text.strip()
                     title = "".join(data[2].text.strip().split())
                     post_date = self.parse_date(data[3].text).strip()
@@ -68,11 +59,8 @@ class DomesticCrawler():
                     content = data[5].text.strip()
                     self.model.create(court=court, title=title, content=content,
                                       post_date=post_date, publish_date=publish_date, tenant_id=self.tenant_id)
-                  # logging.info("Domestic Crawler Finished")
             return True
         except Exception as e:
-          # logging.error("error: " + str(e))
-            print(e)
             if(str(e).find('unexpected alert open') != -1):
               return 'Id Error'
             else:
