@@ -13,7 +13,7 @@ class Captcha():
 
     def parse(self):
         try: 
-            img = self.driver.find_element_by_xpath(".//*[@id='pickimg1']")
+            img = self.driver.find_element_by_xpath(".//*[@id='{}']".format(self.img_element))
             with open('captcha.png', 'wb') as file:
                 file.write(img.screenshot_as_png)   
           # logging.info("Save Image")  
