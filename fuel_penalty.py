@@ -1,21 +1,12 @@
 import os
-import pytesseract
 import logging 
-import urllib.request as urllib2
 import time
-import pymysql
-import base64
-import requests
 import re
 import traceback
-from io import BytesIO
-from PIL import Image
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 from dotenv import load_dotenv
 from datetime import datetime
-
+from captcha import Captcha
 load_dotenv()
 
 class FuelPenaltyCrawler():
@@ -33,47 +24,6 @@ class FuelPenaltyCrawler():
       #              format='%(asctime)s - %(levelname)s : %(message)s', 
       #              filename='fuel_penalty.log') 
 
-    def get_captcha(self, driver):
-        img = driver.find_element_by_xpath(".//*[@id='pickimg1']")
-        with open('captcha.png', 'wb') as file:
-            file.write(img.screenshot_as_png)   
-      # logging.info("Save Image")  
-        buffer = BytesIO()
-        image = Image.open('captcha.png')
-        image.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")     
-
-        data = {
-            "clientKey": os.getenv("ANTI_CAPTCHA_KEY"),
-            "task": {
-                "type": "ImageToTextTask",
-                "body": img_str,
-                "phrase":False,
-                "case": True,
-                "numeric": 2,
-                "math": 0,
-                "minLength": 4,
-                "maxLength": 4
-            }
-        }
-
-        r = requests.post("https://api.anti-captcha.com/createTask", json=data)
-        r.raise_for_status()
-        task_id = r.json()['taskId']
-        ret = ""
-        while True:
-            data = {
-                "clientKey": os.getenv("ANTI_CAPTCHA_KEY"),
-                'taskId': task_id
-            }
-            r = requests.post("https://api.anti-captcha.com/getTaskResult", json=data)
-            r.raise_for_status()
-            if r.json()['status'] == 'ready':
-                ret = r.json()['solution']['text']
-                break
-          # logging.info("tring")  
-            time.sleep(5)
-        return ret
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
         if len(date_list) > 1:
@@ -99,7 +49,7 @@ class FuelPenaltyCrawler():
         answer.send_keys(captcha)
         # remove datepicker ui
         time.sleep(2)
-        driver.find_element_by_id("pickimg1").click()
+        driver.find_element_by_id("m3_note").click()
         time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
       # logging.info("Submit form")
@@ -110,7 +60,8 @@ class FuelPenaltyCrawler():
         try:
             print('fuel_penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
-            captcha = self.get_captcha(self.driver)
+            captcha_parser = Captcha(self.driver, 'pickimg1')
+            captcha = captcha_parser.parse()
           # logging.info("captcha is " + captcha)  
             captcha_error = self.fill_data(self.driver, captcha)
             time.sleep(1)
@@ -138,12 +89,8 @@ class FuelPenaltyCrawler():
                 amount = data[6].text.strip()
                 comment = data[7].contents[0].strip()
                 print(transportation)
-                print(car_number)
-                print(period)
                 print(should_paid_date)
-                print(supervisory_department)
                 print(amount)
-                print(comment)
                 if datetime.now().strftime('%Y-%m-%d') > should_paid_date:
                   self.basic_model.create(transportation=transportation, car_number=car_number, period=period,
                                         should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
@@ -160,12 +107,8 @@ class FuelPenaltyCrawler():
                 amount = data[5].text.strip()
                 comment = data[6].contents[0].strip()
                 print(transportation)
-                print(car_number)
-                print(bill_number)
-                print(supervisory_department)
                 print(should_paid_date)
                 print(amount)
-                print(comment)
                 if datetime.now().strftime('%Y-%m-%d') > should_paid_date:
                   self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
                                         should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
@@ -173,6 +116,12 @@ class FuelPenaltyCrawler():
               # logging.info("Expire Fuel Finished")
 
             return True
+
+        except AttributeError:
+            lastCallStack = traceback.format_exc()
+            print(lastCallStack)
+            time.sleep(2)
+            self.run()
 
         except Exception:
           # logging.error("error: " + str(e))

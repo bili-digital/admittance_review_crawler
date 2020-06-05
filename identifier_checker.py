@@ -1,21 +1,12 @@
 import os
-import pytesseract
 import logging 
-import urllib.request as urllib2
 import time
-import pymysql
-import base64
-import requests
 import re
 import traceback
-from io import BytesIO
-from PIL import Image
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup 
 from dotenv import load_dotenv
 from datetime import datetime
-
+from captcha import Captcha
 load_dotenv()
 
 class IdentifierChecker():
@@ -30,47 +21,6 @@ class IdentifierChecker():
       #              format='%(asctime)s - %(levelname)s : %(message)s', 
       #              filename='fuel_penalty.log') 
 
-    def get_captcha(self, driver):
-        img = driver.find_element_by_xpath(".//*[@id='pickimg1']")
-        with open('captcha.png', 'wb') as file:
-            file.write(img.screenshot_as_png)   
-      # logging.info("Save Image")  
-        buffer = BytesIO()
-        image = Image.open('captcha.png')
-        image.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")     
-
-        data = {
-            "clientKey": os.getenv("ANTI_CAPTCHA_KEY"),
-            "task": {
-                "type": "ImageToTextTask",
-                "body": img_str,
-                "phrase":False,
-                "case": True,
-                "numeric": 2,
-                "math": 0,
-                "minLength": 4,
-                "maxLength": 4
-            }
-        }
-
-        r = requests.post("https://api.anti-captcha.com/createTask", json=data)
-        r.raise_for_status()
-        task_id = r.json()['taskId']
-        ret = ""
-        while True:
-            data = {
-                "clientKey": os.getenv("ANTI_CAPTCHA_KEY"),
-                'taskId': task_id
-            }
-            r = requests.post("https://api.anti-captcha.com/getTaskResult", json=data)
-            r.raise_for_status()
-            if r.json()['status'] == 'ready':
-                ret = r.json()['solution']['text']
-                break
-          # logging.info("tring")  
-            time.sleep(5)
-        return ret
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
         date_list[0] = str(int(date_list[0]) + 1911)
@@ -96,9 +46,9 @@ class IdentifierChecker():
         answer.send_keys(captcha)
 
         # remove datepicker ui
+        driver.find_element_by_id("m3_note").click()
         time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
-      # logging.info("Submit form")
         time.sleep(1)
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -122,7 +72,8 @@ class IdentifierChecker():
         try:
             print('identifier start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
-            captcha = self.get_captcha(self.driver)
+            captcha_parser = Captcha(self.driver, 'pickimg1')
+            captcha = captcha_parser.parse()
           # logging.info("captcha is " + captcha)  
             captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
             time.sleep(1)
@@ -146,6 +97,12 @@ class IdentifierChecker():
               # logging.info("Expire Fuel Finished")
 
             return True
+
+        except AttributeError:
+            lastCallStack = traceback.format_exc()
+            print(lastCallStack)
+            time.sleep(2)
+            self.run()
 
         except Exception:
           # logging.error("error: " + str(e))
