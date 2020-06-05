@@ -1,5 +1,4 @@
 import os
-import logging 
 import time
 import re
 import traceback
@@ -20,9 +19,6 @@ class FuelPenaltyCrawler():
         self.birthday = birthday
         self.tenant_id = tenant_id
 
-      # logging.basicConfig(level=logging.DEBUG, 
-      #              format='%(asctime)s - %(levelname)s : %(message)s', 
-      #              filename='fuel_penalty.log') 
 
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
@@ -52,7 +48,6 @@ class FuelPenaltyCrawler():
         driver.find_element_by_id("m3_note").click()
         time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
-      # logging.info("Submit form")
         time.sleep(1)
         captcha_error = len(driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]"))
         return captcha_error
@@ -61,18 +56,14 @@ class FuelPenaltyCrawler():
             print('fuel_penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha_parser = Captcha(self.driver, 'pickimg1')
-            captcha = captcha_parser.parse()
-          # logging.info("captcha is " + captcha)  
+            captcha = captcha_parser.parse() 
             captcha_error = self.fill_data(self.driver, captcha)
             time.sleep(1)
 
             count = 0
             while captcha_error == 1 and count <= 5:
-              # logging.info("retry Submit form")
-              # logging.info("No. " + str(count))
                 time.sleep(1)
-                captcha = self.get_captcha(self.driver)
-              # logging.info("new captcha is " + captcha)
+                captcha = captcha_parser.parse()
                 captcha_error = self.fill_data(self.driver, captcha)
                 count+=1
             
@@ -96,7 +87,6 @@ class FuelPenaltyCrawler():
                                         should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
                                         amount=amount, comment=comment,
                                         tenant_id=self.tenant_id)
-              # logging.info("Basic Fuel Finished")
             for idx, row in enumerate(expired_amount_rows):
                 data = row.select('td')
                 transportation = data[0].text.strip()
@@ -113,7 +103,6 @@ class FuelPenaltyCrawler():
                   self.expire_model.create(transportation=transportation, car_number=car_number, bill_number=bill_number,
                                         should_paid_date=should_paid_date, supervisory_department=supervisory_department, 
                                         amount=amount, comment=comment, tenant_id=self.tenant_id)
-              # logging.info("Expire Fuel Finished")
 
             return True
 
@@ -124,7 +113,6 @@ class FuelPenaltyCrawler():
             self.run()
 
         except Exception:
-          # logging.error("error: " + str(e))
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)
             return False

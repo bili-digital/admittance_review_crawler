@@ -1,5 +1,4 @@
 import os
-import logging 
 import time
 import re
 import traceback
@@ -17,9 +16,6 @@ class IdentifierChecker():
         self.id_number = id_number
         self.birthday = birthday
 
-      # logging.basicConfig(level=logging.DEBUG, 
-      #              format='%(asctime)s - %(levelname)s : %(message)s', 
-      #              filename='fuel_penalty.log') 
 
     def parse_date(self, date):
         date_list = re.split('年|月|日',date)
@@ -73,8 +69,7 @@ class IdentifierChecker():
             print('identifier start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha_parser = Captcha(self.driver, 'pickimg1')
-            captcha = captcha_parser.parse()
-          # logging.info("captcha is " + captcha)  
+            captcha = captcha_parser.parse() 
             captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
             time.sleep(1)
             count = 0
@@ -86,15 +81,11 @@ class IdentifierChecker():
               if count == 5:
                 print('captcha error too much times')
                 return False
-              # logging.info("retry Submit form")
-              # logging.info("No. " + str(count))
-                time.sleep(1)
-                captcha = self.get_captcha(self.driver)
-              # logging.info("new captcha is " + captcha)
-                captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
-                count+=1
+              time.sleep(1)
+              captcha = captcha_parser.parse()
+              captcha_error, data_error = self.fill_fuel_data(self.driver, captcha)
+              count+=1
           
-              # logging.info("Expire Fuel Finished")
 
             return True
 
@@ -105,7 +96,6 @@ class IdentifierChecker():
             self.run()
 
         except Exception:
-          # logging.error("error: " + str(e))
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)
             return False
