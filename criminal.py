@@ -63,7 +63,7 @@ class CriminalCrawler():
                 raise AttributeError
 
             print(alert.text)
-            if(alert.text == '查無資料'):
+            if(alert.text == '無符合的通緝犯'):
                 alert.accept()
                 self.model.create(status="normal", tenant_id=self.tenant_id)
             else:
