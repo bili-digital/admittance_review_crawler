@@ -36,7 +36,7 @@ class CriminalCrawler():
         answer.clear()
         answer.send_keys(captcha)
 
-        submit = driver.find_element_by_id("QueryButton")
+        submit = driver.find_element_by_xpath('//a[@title="查詢"]')
         submit.click()
 
     def parse_date(self, date):

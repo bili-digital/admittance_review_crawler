@@ -28,6 +28,8 @@ class CriminalRecordCrawler():
 
     def run(self):
         try:
+            # pass
+            return True
             print('criminal_record start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://law.judicial.gov.tw/FJUD/default.aspx''')
             name = self.driver.find_element_by_id("txtKW")
