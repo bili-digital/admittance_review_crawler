@@ -24,20 +24,7 @@ class CriminalCrawler():
         self.count = 0
  
     def fill_data(self, driver, captcha):
-        name = driver.find_element_by_name("CriminalName")
-        name.clear()
-        name.send_keys(self.name or '')
-
-        id_number = driver.find_element_by_name("CriminalIdNo")
-        id_number.clear()
-        id_number.send_keys(self.id_number or '')
-
-        answer = driver.find_element_by_name("WaitValidateCode")
-        answer.clear()
-        answer.send_keys(captcha)
-
-        submit = driver.find_element_by_xpath('//a[@title="查詢"]')
-        submit.click()
+        driver.get('''https://service.moj.gov.tw/CriminalWanted/QueryCriminalList/QueryCriminalResult?CriminalName={}&CriminalIdNo={}&WaitValidateCode={}'''.format(self.name or '', self.id_number or '',  captcha))
 
     def parse_date(self, date):
         date_list = date.split('.')
@@ -63,13 +50,12 @@ class CriminalCrawler():
                 raise AttributeError
 
             print(alert.text)
-            if(alert.text == '無符合的通緝犯'):
+            if(alert.text == '無符合的通緝犯' or alert.text == '查無資料'):
                 alert.accept()
                 self.model.create(status="normal", tenant_id=self.tenant_id)
             else:
                 alert.accept()
                 self.model.create(status="abnormal", tenant_id=self.tenant_id)  
-            # logging.info("Criminal Record Crawler Finished")             
             return True
 
         except (AttributeError, TimeoutException):
