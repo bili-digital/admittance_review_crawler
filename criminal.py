@@ -59,14 +59,18 @@ class CriminalCrawler():
             return True
 
         except (AttributeError, TimeoutException):
-            lastCallStack = traceback.format_exc()
-            print(lastCallStack)
-            self.count += 1
-            if self.count < 5:
-                result = self.run()
-                return result
+            if(self.driver.page_source.find(self.name) != -1):
+                self.model.create(status="abnormal", tenant_id=self.tenant_id)  
+                return True
             else:
-                return False
+                lastCallStack = traceback.format_exc()
+                print(lastCallStack)
+                self.count += 1
+                if self.count < 5:
+                    result = self.run()
+                    return result
+                else:
+                    return False
 
 
         except Exception:
