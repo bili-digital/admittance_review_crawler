@@ -45,22 +45,39 @@ class FuelPenaltyCrawler():
         birthday.send_keys(self.birthday)
         answer.send_keys(captcha)
         # remove datepicker ui
-        time.sleep(2)
-        answer.click()
+        driver.find_element_by_id("m3_note").click()
         time.sleep(2)
         driver.find_element_by_id("submit_btn").click()
         time.sleep(1)
-        captcha_error = len(driver.find_elements_by_xpath("//*[contains(text(), '驗證碼輸入錯誤')]"))
-        return captcha_error
+
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        form_text_ele = soup.select('#validateStr.errors')
+        id_error_ele = soup.select('#idNo-error')
+        header_elem = soup.select('#headerMessage')
+
+        if len(form_text_ele) != 0 and form_text_ele[0].text == '驗證碼輸入錯誤':
+          captcha_error = 1
+        else:
+          captcha_error = 0
+
+        if len(id_error_ele) != 0 and id_error_ele[0].text == '身分證或居留證格式錯誤':
+          data_error = 1
+        elif len(header_elem) != 0 and header_elem[0].text == '請確認您輸入的證號及生日是否正確。':
+          data_error = 1
+        else:
+          data_error = 0        
+        return captcha_error, data_error
+
     def run(self):
         try:
             print('fuel_penalty start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://www.mvdis.gov.tw/m3-emv-fee/fee/fuelFee''')
             captcha_parser = Captcha(self.driver, 'pickimg1')
             captcha = captcha_parser.parse() 
-            captcha_error = self.fill_data(self.driver, captcha)
+            captcha_error, data_error = self.fill_data(self.driver, captcha)
             time.sleep(1)
-
+            if data_error != 0:
+                return False
             count = 0
             while captcha_error == 1 and count <= 5:
                 time.sleep(1)
