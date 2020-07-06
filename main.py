@@ -36,37 +36,40 @@ def start_crawler():
     id_number = request.args.get('id_number')
     birth_date = request.args.get('birth_date')
     tenant_id = request.args.get('tenant_id')
-
     total_result = {}
-    if ( birth_date != None and id_number != None ):
-        fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birth_date, tenant_id)
-        total_result['fuel_penalty'] = fuel_penalty_crawler.run()
+    try:
+        if ( birth_date != None and id_number != None ):
+            fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birth_date, tenant_id)
+            total_result['fuel_penalty'] = fuel_penalty_crawler.run()
 
-        traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
-        total_result['traffic_penalty'] = traffic_penalty_crawler.run()
+            traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
+            total_result['traffic_penalty'] = traffic_penalty_crawler.run()
 
-    if ( name != None and id_number != None ):
-        consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-        total_result['consumer_debt'] = consumer_debt_crawler.run()
+        if ( name != None and id_number != None ):
+            consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+            total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-        domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
-        total_result['domestic'] = domestic_crawler.run()
+            domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+            total_result['domestic'] = domestic_crawler.run()
 
-        wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
-        total_result['wanted'] = wanted_crawler.run()
+            wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
+            total_result['wanted'] = wanted_crawler.run()
 
-    if ( name != None or id_number != None ):
-        criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
-        total_result['criminal'] = criminal_crawler.run()
+        if ( name != None or id_number != None ):
+            criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
+            total_result['criminal'] = criminal_crawler.run()
 
-        missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
-        total_result['missing_person'] = missing_person_crawler.run()
+            missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
+            total_result['missing_person'] = missing_person_crawler.run()
 
-    if ( name != None ):
-        criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-        criminal_record_crawler.run()
+        if ( name != None ):
+            criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+            criminal_record_crawler.run()
+        driver.close()
+    except Exception:
+        total_result['error'] = True
+        driver.close()
 
-    driver.close()
     return jsonify(total_result)
 
 @app.route('/crawler/tenant_check_crawler', methods=['GET'])
