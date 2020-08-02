@@ -99,5 +99,10 @@ def start_current_wanted_crawler():
 
     driver.close()
     return jsonify(result)
+
+@app.route('/', methods=['GET'])
+def home():
+    return 'success'
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
