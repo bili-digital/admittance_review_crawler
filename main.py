@@ -29,46 +29,49 @@ options.add_argument('--disable-dev-shm-usage')
 
 @app.route('/crawler/start_crawler', methods=['GET'])
 def start_crawler():
-    os.chdir(os.getenv('PRODUCTION_PATH'))
-    driver = webdriver.Chrome(os.getenv('DRIVER_PATH'), options = options)
-
-    name = request.args.get('name')
-    id_number = request.args.get('id_number')
-    birth_date = request.args.get('birth_date')
-    tenant_id = request.args.get('tenant_id')
+    token = request.headers.get('Token')
     total_result = {}
-    try:
-        if ( birth_date != None and id_number != None ):
-            fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birth_date, tenant_id)
-            total_result['fuel_penalty'] = fuel_penalty_crawler.run()
+    if token == os.getenv("TOKEN"):
+        driver = webdriver.Chrome(os.getcwd() + '/chromedriver', options = options)
 
-            traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
-            total_result['traffic_penalty'] = traffic_penalty_crawler.run()
+        name = request.args.get('name')
+        id_number = request.args.get('id_number')
+        birth_date = request.args.get('birth_date')
+        tenant_id = request.args.get('tenant_id')
+        try:
+            if ( birth_date != None and id_number != None ):
+                fuel_penalty_crawler = FuelPenaltyCrawler(FuelPenaltyBasic, FuelPenaltyExpire, db, driver, id_number, birth_date, tenant_id)
+                total_result['fuel_penalty'] = fuel_penalty_crawler.run()
 
-        if ( name != None and id_number != None ):
-            consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-            total_result['consumer_debt'] = consumer_debt_crawler.run()
+                traffic_penalty_crawler = TrafficPenaltyCrawler(TrafficPenalty, db, driver, id_number, birth_date, tenant_id)
+                total_result['traffic_penalty'] = traffic_penalty_crawler.run()
 
-            domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
-            total_result['domestic'] = domestic_crawler.run()
+            if ( name != None and id_number != None ):
+                consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+                total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-            wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
-            total_result['wanted'] = wanted_crawler.run()
+                domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+                total_result['domestic'] = domestic_crawler.run()
 
-        if ( name != None or id_number != None ):
-            criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
-            total_result['criminal'] = criminal_crawler.run()
+                wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
+                total_result['wanted'] = wanted_crawler.run()
 
-            missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
-            total_result['missing_person'] = missing_person_crawler.run()
+            if ( name != None or id_number != None ):
+                criminal_crawler = CriminalCrawler(Criminal, db, driver, name, id_number, tenant_id)
+                total_result['criminal'] = criminal_crawler.run()
 
-        if ( name != None ):
-            criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-            criminal_record_crawler.run()
-        driver.close()
-    except Exception:
-        total_result['error'] = True
-        driver.close()
+                missing_person_crawler = MissingPersonCrawler(MissingPerson, db, driver, name, id_number, tenant_id)
+                total_result['missing_person'] = missing_person_crawler.run()
+
+            if ( name != None ):
+                criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
+                criminal_record_crawler.run()
+            driver.close()
+        except Exception:
+            total_result['error'] = True
+            driver.close()
+    else:
+        total_result['msg'] = 'invalid'
 
     return jsonify(total_result)
 
