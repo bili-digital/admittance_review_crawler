@@ -47,9 +47,22 @@ class MissingPersonCrawler():
             result = self.driver.find_element_by_id('tabResult').text
             if result.find('符合查詢資料共0筆') != -1:
               status = '查無資料'
+              reason = ''
             else:
+              result_images = self.driver.find_elements_by_class_name('hasBorder')
+              reasons = []
+              for result_image in result_images:
+                  result_image.click()
+                  WebDriverWait(self.driver, 4).until(EC.element_to_be_clickable((By.ID, 'tabDetail')))
+                  reason = self.driver.find_elements_by_xpath("//*[contains(text(), '原因名稱')]")[0].text
+                  reason = reason.split('：')[1]
+                  reasons.append(reason)
+                  backBtn = self.driver.find_element_by_id('backListBtn')
+                  backBtn.click()
+                  
               status = '有失蹤紀錄'
-            self.model.create(status=status, tenant_id=self.tenant_id)
+              reason = ','.join(reasons)
+            self.model.create(status=status, reason=reason,tenant_id=self.tenant_id)
             return True
 
         except (AttributeError, TimeoutException):

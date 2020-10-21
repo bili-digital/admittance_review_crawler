@@ -1,7 +1,6 @@
 chromedriver
-.env
-*.log
-*.png
 *.pyc
-env
-uwsgi
+env/
+.env
+*.png
+*.log

@@ -33,7 +33,7 @@ class CriminalCrawler():
 
     def run(self):
         try:
-            print('crawler start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            print('criminal start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://service.moj.gov.tw/CriminalWanted''')
             checkbox = self.driver.find_element_by_xpath('//label[@for="PrecautionsAccepted"]')
             checkbox.click()
@@ -50,17 +50,20 @@ class CriminalCrawler():
                 raise AttributeError
 
             print(alert.text)
+            reason = ''
             if(alert.text == '無符合的通緝犯' or alert.text == '查無資料'):
                 alert.accept()
-                self.model.create(status="normal", tenant_id=self.tenant_id)
+                self.model.create(status="normal", reason=reason, tenant_id=self.tenant_id)
             else:
                 alert.accept()
-                self.model.create(status="abnormal", tenant_id=self.tenant_id)  
+                reason = self.driver.page_source.split('\n            \n            \n                ')[-1].split('\n            ')[0]
+                self.model.create(status="abnormal", reason=reason, tenant_id=self.tenant_id)  
             return True
 
         except (AttributeError, TimeoutException):
             if(self.driver.page_source.find(self.name) != -1):
-                self.model.create(status="abnormal", tenant_id=self.tenant_id)  
+                reason = self.driver.page_source.split('\n            \n            \n                ')[-1].split('\n            ')[0]
+                self.model.create(status="abnormal", reason=reason, tenant_id=self.tenant_id)  
                 return True
             else:
                 lastCallStack = traceback.format_exc()
