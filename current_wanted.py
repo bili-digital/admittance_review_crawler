@@ -20,15 +20,21 @@ class CurrentWantCrawler():
             source_code = BeautifulSoup(response.text, 'html.parser')
             data = source_code.find_all('div', 'notification-page__link')
             for data_row in data:
-              # logging.info("Get data")
                 name = data_row.contents[0].strip()
                 id_number = data_row.contents[2].strip()
-                result = self.db.session.query(self.model).filter(self.model.name ==name, 
-                                                              self.model.id_number == id_number).all()
-                if(len(result) > 0):
-                  pass
-                else:
-                  self.model.create(name=name, id_number=id_number)
+                path = data_row['href']
+                detail_response = requests.get('https://www.cib.gov.tw{}'.format(path))
+                detail_source_code = BeautifulSoup(detail_response.text, 'html.parser')
+                table_rows = detail_source_code.select('li.article__item')
+                for table_row in table_rows:
+                    if(table_row.text.find('查尋緝原因') != -1):
+                      reason = table_row.select('div.article__content')[0].text
+                      result = self.db.session.query(self.model).filter(self.model.name ==name, 
+                                                                    self.model.id_number == id_number).all()
+                      if(len(result) > 0):
+                        pass
+                      else:
+                        self.model.create(name=name, id_number=id_number, reason=reason)
             
             return True
         except Exception:
