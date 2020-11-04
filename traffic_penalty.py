@@ -80,6 +80,7 @@ class TrafficPenaltyCrawler():
                 content = data[2].text.strip()
                 amount = data[3].text.strip()
                 should_paid_date = self.parse_date(data[4].text.strip())
+                content = content.translate(str.maketrans('', '', ' \n\t\r'))
                 self.model.create(violation_date=violation_date, content=content, amount=amount,
                                   should_paid_date=should_paid_date, tenant_id=self.tenant_id)
               if len(next_button) > 0:
@@ -102,6 +103,7 @@ class TrafficPenaltyCrawler():
                   content = data[0].text.strip() + '、' + data[2].text.strip()
                   amount = data[3].text.strip()
                   should_paid_date = self.parse_date(data[4].text.strip())
+                  content = content.translate(str.maketrans('', '', ' \n\t\r'))
                   self.model.create(violation_date=violation_date, content=content, amount=amount,
                                     should_paid_date=should_paid_date, tenant_id=self.tenant_id)
                 if len(next_button) > 0:
