@@ -47,13 +47,11 @@ def start_crawler():
                 total_result['traffic_penalty'] = traffic_penalty_crawler.run()
 
             if ( name != None and id_number != None ):
-                # consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
-                # total_result['consumer_debt'] = consumer_debt_crawler.run()
-                total_result['consumer_debt'] = False
+                consumer_debt_crawler = ConsumerDebtCrawler(ConsumerDebt, db, driver, name, id_number, tenant_id)
+                total_result['consumer_debt'] = consumer_debt_crawler.run()
 
-                # domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
-                # total_result['domestic'] = domestic_crawler.run()
-                total_result['domestic'] = False
+                domestic_crawler = DomesticCrawler(Domestic, db, driver, name, id_number, tenant_id)
+                total_result['domestic'] = domestic_crawler.run()
 
                 wanted_crawler = WantedCrawler(Wanted, db, driver, name, id_number, tenant_id)
                 total_result['wanted'] = wanted_crawler.run()
