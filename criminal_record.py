@@ -29,20 +29,16 @@ class CriminalRecordCrawler():
     def run(self):
         try:
             # pass
-            return True
             print('criminal_record start at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.driver.get('''https://law.judicial.gov.tw/FJUD/default.aspx''')
             name = self.driver.find_element_by_id("txtKW")
             name.clear()
             name.send_keys(self.name)
-          # logging.info("Start to query: " + "施宏勳")
 
             self.driver.find_element_by_id("btnSimpleQry").click()
             time.sleep(1)
-          # logging.info("On query result page")
             iframe = self.driver.find_element_by_id("iframe-data")
             self.driver.get(iframe.get_attribute('src'))
-          # logging.info("Get iframe page")
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             criminal_rows = soup.select("tr")
             unfinished = True
@@ -50,19 +46,16 @@ class CriminalRecordCrawler():
                 soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 criminal_rows = soup.select("tr")
                 next_btn = soup.select("#hlNext")            
-                # logging.info("Start to enumerate criminal rows")
                 for idx, criminal_row in enumerate(criminal_rows):
                     if criminal_row.get("class", None) != None or idx == 0:
                         continue
                     else:
                         data = criminal_row.select('td')
-                      # logging.info("Get data for title: " + data[1].text)
                         title = data[1].text
                         judge_date = self.parse_date(data[2].text)
                         reason = data[3].text
                         self.model.create(title=title, judge_date=judge_date, 
                                           reason=reason, tenant_id=self.tenant_id)
-                      # logging.info("Criminal Record Crawler Finished")
 
                 if(len(next_btn) > 0):
                     self.driver.get('''https://law.judicial.gov.tw{}'''.format(next_btn[0]['href']))
