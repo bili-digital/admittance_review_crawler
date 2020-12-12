@@ -65,7 +65,7 @@ def start_crawler():
 
             if ( name != None ):
                 criminal_record_crawler = CriminalRecordCrawler(CriminalRecord, db, driver, name, tenant_id)
-                criminal_record_crawler.run()
+                total_result['criminal_record'] = criminal_record_crawler.run()
             driver.close()
         except Exception:
             total_result['error'] = True

@@ -64,7 +64,6 @@ class CriminalRecordCrawler():
             print('criminal_record end at:' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             return True
         except Exception:
-          # logging.error("error: " + str(e))
             lastCallStack = traceback.format_exc() #取得Call Stack的最後一筆資料
             print(lastCallStack)
             return False
